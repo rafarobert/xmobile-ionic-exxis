@@ -79,8 +79,12 @@ export class LoginPage implements OnInit {
 
     public ipacction() {
         if (this.ip != '') {
-            this.nativeStorage.setItem('IP', this.ip).then(() => {
-                this.bool = false;
+            this.nativeStorage.setItem('IP', this.ip).then((data: any) => {
+                this.bool = true;
+                this.toast.show(`Conectando con IP ${this.ip}.`, '3000', 'top').subscribe(toast => {
+                });
+            }).catch((err: any) => {
+                console.log(err);
             })
         } else {
             this.toast.show(`IP no valido.`, '3000', 'top').subscribe(toast => {
@@ -139,6 +143,14 @@ export class LoginPage implements OnInit {
                     console.log(toast);
                 });
         }
+    }
+
+    public estaupdate() {
+        this.native.statusConexion().then((est: any) => {
+            console.log(est);
+        }).catch((err: any) => {
+            console.log(err);
+        })
     }
 
 

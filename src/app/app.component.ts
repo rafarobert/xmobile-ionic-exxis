@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {Platform} from '@ionic/angular';
+import {Platform, Events} from '@ionic/angular';
 import {SplashScreen} from '@ionic-native/splash-screen/ngx';
 import {Router} from '@angular/router';
 import {MenuController} from '@ionic/angular';
@@ -13,6 +13,8 @@ import {Uid} from "@ionic-native/uid/ngx";
 import {AndroidPermissions} from "@ionic-native/android-permissions/ngx";
 import {Dialogs} from "@ionic-native/dialogs/ngx";
 import {NativeService} from "./services/native.service"
+import {Network} from "@ionic-native/network/ngx";
+import {NativeStorage} from "@ionic-native/native-storage/ngx";
 
 @Component({
     selector: 'app-root',
@@ -41,10 +43,10 @@ export class AppComponent {
            icon: 'paper'
          },*/
 
-    constructor(private platform: Platform,
+    constructor(private platform: Platform, public events: Events,
                 private splashScreen: SplashScreen,
-                private statusBar: StatusBar,
-                private menuCtrl: MenuController,
+                private statusBar: StatusBar, private network: Network,
+                private menuCtrl: MenuController, private nativeStorage: NativeStorage,
                 private router: Router, private dialogs: Dialogs,
                 private model: ModelService,
                 private uid: Uid, private androidPermissions: AndroidPermissions,
@@ -57,7 +59,15 @@ export class AppComponent {
         this.nombrePersona = "";
         this.apellidoMPersona = "";
         this.nombreUsuario = "";
+
+
+       
+
     }
+
+
+
+
 
     public getPermission() {
         this.androidPermissions.checkPermission(this.androidPermissions.PERMISSION.READ_PHONE_STATE).then(res => {
@@ -129,6 +139,20 @@ export class AppComponent {
             this.statusBar.overlaysWebView(false);
             this.statusBar.backgroundColorByHexString('#112848');
             this.splashScreen.hide();
+            this.network.onDisconnect().subscribe(() => {
+                this.nativeStorage.setItem("CX", 0).then(() => {
+                    this.toast.show(`Red fue desconectada :-(`, '5000', 'top').subscribe(
+                        toast => {
+                        });
+                })
+            });
+            this.network.onConnect().subscribe(() => {
+                this.nativeStorage.setItem("CX", 1).then(() => {
+                    this.toast.show(`Red conectada!`, '5000', 'top').subscribe(
+                        toast => {
+                        });
+                })
+            });
         });
     }
 
@@ -138,7 +162,6 @@ export class AppComponent {
                 this.menuCtrl.enable(true);
             }
         });
-        this.native.conexion();
     }
 
     public exit() {
