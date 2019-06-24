@@ -15,33 +15,13 @@ export class NativeService {
                 private spinnerDialog: SpinnerDialog) {
     }
 
-    public conexion() {
-        this.network.onDisconnect().subscribe(() => {
-            this.nativeStorage.setItem("CX", true);
-            this.toast.show(`Network was disconnected :-(`, '5000', 'top').subscribe(
-                toast => {
-                });
-        });
-        this.network.onConnect().subscribe(() => {
-            this.nativeStorage.setItem("CX", false);
-            this.toast.show(`Network connected!`, '5000', 'top').subscribe(
-                toast => {
-                });
-            console.log(this.network);
-        });
-    }
 
     public statusConexion() {
         return new Promise((resolve, reject) => {
             this.nativeStorage.getItem("CX").then((data: any) => {
-                if (data == true) {
-                    resolve(false);
-                } else {
-                    resolve(true);
-                }
+                resolve(data);
             }).catch((err) => {
                 reject(err);
-                this.spinnerDialog.hide();
             })
         })
     }
