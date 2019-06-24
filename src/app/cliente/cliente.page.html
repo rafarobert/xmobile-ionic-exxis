@@ -1,0 +1,25 @@
+<ion-header>
+    <ion-toolbar color="primary">
+        <ion-buttons slot="start">
+            <ion-back-button></ion-back-button>
+        </ion-buttons>
+        <ion-title>
+            {{item.CardName}}
+        </ion-title>
+    </ion-toolbar>
+</ion-header>
+<ion-content>
+
+    <ion-card>
+        <ion-card-header>
+            <ion-card-title>{{item.CardName}}</ion-card-title>
+            <ion-card-subtitle>{{item.CardCode}}</ion-card-subtitle>
+        </ion-card-header>
+
+        <ion-card-content>
+            <p><b>Tipo: </b>{{item.CardType}}</p>
+            <p><b>Direccion: {{item.Address}} </b></p>
+        </ion-card-content>
+    </ion-card>
+
+</ion-content>

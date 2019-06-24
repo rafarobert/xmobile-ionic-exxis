@@ -1,0 +1,57 @@
+<ion-header>
+    <ion-toolbar color="primary">
+        <ion-buttons slot="start">
+            <ion-back-button></ion-back-button>
+        </ion-buttons>
+        <ion-title>{{etiquetas.tit_Sincr}}</ion-title>
+    </ion-toolbar>
+</ion-header>
+<ion-content>
+    <ion-card>
+        <ion-card-header>
+            <ion-card-subtitle>{{etiquetas.lbl_SincrDesc}}</ion-card-subtitle>
+            <ion-card-title></ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+            <ion-list>
+                <ion-item>
+                    <ion-checkbox slot="start" (ionChange)="datachanged($event)" color="medium" [(ngModel)]="todos"
+                                  [(ngModel)]="productos"></ion-checkbox>
+                    <ion-label>{{etiquetas.chk_MarkAll}}</ion-label>
+                    <ion-spinner *ngIf="estadoproductos" slot="end"></ion-spinner>
+                </ion-item>
+                <ion-item-divider>
+                    <ion-label>
+                    </ion-label>
+                </ion-item-divider>
+                <ion-item>
+                    <ion-toggle slot="start" (ionChange)="datatoggel()" color="secondary"
+                                [(ngModel)]="productos"></ion-toggle>
+                    <ion-label>{{etiquetas.rbt_Product}}</ion-label>
+                    <ion-spinner name="bubbles" *ngIf="loadproductos" slot="end"></ion-spinner>
+                </ion-item>
+
+                <ion-item>
+                    <ion-toggle slot="start" (ionChange)="datatoggel()" color="secondary"
+                                [(ngModel)]="clientes"></ion-toggle>
+                    <ion-label>{{etiquetas.rbt_Client}}</ion-label>
+                    <ion-spinner name="bubbles" *ngIf="loadclientes" slot="end"></ion-spinner>
+                </ion-item>
+
+                <ion-item>
+                    <ion-toggle slot="start" (ionChange)="datatoggel()" color="secondary"
+                                [(ngModel)]="usuarios"></ion-toggle>
+                    <ion-label>{{etiquetas.rbt_User}}</ion-label>
+                    <ion-spinner name="bubbles" *ngIf="loadusuarios" slot="end"></ion-spinner>
+                </ion-item>
+            </ion-list>
+
+            <br/>
+            <ion-button color="primary" [disabled]="!isenabled" expand="block" shape="round" (click)="sincronizar()">
+                {{etiquetas.btn_SincrStart}}
+            </ion-button>
+        </ion-card-content>
+    </ion-card>
+
+
+</ion-content>

@@ -1,0 +1,24 @@
+.welcome-card ion-img {
+  max-height: 35vh;
+  overflow: hidden;
+}
+.itemCategoria {
+  height: 120px;
+  width: 120px;
+  background-color: #bbbbbb;
+  margin: 5px;
+}
+.text-point {
+  margin-right: 5px;
+  font-size: 0.8rem;
+}
+
+.scrolling-wrapper {
+  overflow-x: scroll;
+  overflow-y: hidden;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+  .itemCategoria {
+    display: inline-block;
+  }
+}

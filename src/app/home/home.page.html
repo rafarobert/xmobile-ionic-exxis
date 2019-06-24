@@ -1,0 +1,44 @@
+<ion-header>
+    <ion-toolbar color="primary">
+        <ion-buttons slot="start">
+            <ion-menu-button></ion-menu-button>
+        </ion-buttons>
+        <ion-title>
+            {{etiquetas.tit_Product}}
+        </ion-title>
+        <ion-buttons slot="end">
+            <ion-button (click)="toggelEstado()">
+                <ion-icon *ngIf="!estadox" color="success" name="wifi"></ion-icon>
+                <ion-icon *ngIf="estadox" color="medium" name="wifi"></ion-icon>
+            </ion-button>
+            <ion-button (click)="pageSincronizar()">
+                <ion-icon name="sync"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+    <ion-searchbar placeholder="{{etiquetas.txt_ProductSearch}}" (ionChange)="buscar($event)"></ion-searchbar>
+</ion-header>
+<ion-content>
+    <br/>
+
+    <div style="margin: auto" *ngIf="loadItem">
+        <br/>
+        <br/>
+        <p class="ion-text-center">
+            <ion-spinner></ion-spinner>
+        </p>
+        <p class="ion-text-center">Cargando...</p>
+    </div>
+    <ion-list *ngIf="!loadItem">
+        <ion-item *ngFor="let item of items" (click)="findItem(item)">
+            <ion-avatar slot="start">
+                <img src="../assets/box.png"/>
+            </ion-avatar>
+            <ion-label>
+                <p><b>{{item.ItemName}}</b></p>
+                <p>{{item.SalesUnit}} </p>
+            </ion-label>
+        </ion-item>
+    </ion-list>
+    <br/>
+</ion-content>

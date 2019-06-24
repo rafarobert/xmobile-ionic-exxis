@@ -1,0 +1,21 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="end" (click)="cerrar()">
+      Cancelar
+    </ion-buttons>
+    <ion-title>Seleccionar producto</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-list>
+    <ion-item *ngFor="let item of items" (click)="seleccionar(item)">
+      <ion-avatar slot="start">
+        <img src="../assets/man.png" />
+      </ion-avatar>
+      <ion-label>
+        <p><b>{{item.ItemName}}</b> </p>
+        <p>{{item.SalesUnit}} </p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>

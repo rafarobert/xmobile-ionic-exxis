@@ -1,0 +1,35 @@
+<ion-header>
+    <ion-toolbar color="primary">
+        <ion-buttons slot="start">
+            <ion-menu-button></ion-menu-button>
+        </ion-buttons>
+        <ion-title>
+            {{etiquetas.tit_UserSession}}
+        </ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+    <ion-card>
+        <p class="ion-text-center">
+            <img src="../../assets/user.png" style="width: 40%; margin: auto">
+        </p>
+        <ion-card-header>
+            <ion-card-title class="ion-text-center">Cod: 0000001</ion-card-title>
+            <ion-card-subtitle class="ion-text-center">{{datos.nombrePersona}} {{datos.apellidoMPersona}}
+                {{datos.apellidoPPersona}}.
+            </ion-card-subtitle>
+        </ion-card-header>
+        <ion-card-content>
+
+
+            <ion-list>
+                <ion-item (click)="settingPass()">
+                    <ion-label>Cambiar contrañena</ion-label>
+                </ion-item>
+            </ion-list>
+
+        </ion-card-content>
+    </ion-card>
+</ion-content>
