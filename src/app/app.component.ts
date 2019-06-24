@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {Platform, Events} from '@ionic/angular';
+import {Platform} from '@ionic/angular';
 import {SplashScreen} from '@ionic-native/splash-screen/ngx';
 import {Router} from '@angular/router';
 import {MenuController} from '@ionic/angular';
@@ -43,7 +43,7 @@ export class AppComponent {
            icon: 'paper'
          },*/
 
-    constructor(private platform: Platform, public events: Events,
+    constructor(private platform: Platform,
                 private splashScreen: SplashScreen,
                 private statusBar: StatusBar, private network: Network,
                 private menuCtrl: MenuController, private nativeStorage: NativeStorage,
@@ -61,12 +61,7 @@ export class AppComponent {
         this.nombreUsuario = "";
 
 
-       
-
     }
-
-
-
 
 
     public getPermission() {
@@ -153,6 +148,17 @@ export class AppComponent {
                         });
                 })
             });
+
+            setTimeout(() => {
+                if (this.network.type != 'none') {
+                    this.nativeStorage.setItem("CX", 1).then(() => {
+                    })
+                } else {
+                    this.nativeStorage.setItem("CX", 0).then(() => {
+                    })
+                }
+            }, 2000);
+
         });
     }
 

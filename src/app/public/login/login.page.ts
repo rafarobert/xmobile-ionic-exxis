@@ -49,16 +49,11 @@ export class LoginPage implements OnInit {
                 private storage: Storage,
                 private datarestService: DatarestService,
                 private spinnerDialog: SpinnerDialog, private native: NativeService) {
-
-
-        console.log("Constructor");
         this.bool = true;
         this.ip = '';
         /****************/
-        this.username = 'exxis';
-        this.password = 'webweb';
-        this.username = "";
-        this.password = "";
+        this.username = '';
+        this.password = '';
         this.est = 'FUERA DE LINEA';
         this.modo = false;
         this.idio = 0;
@@ -68,14 +63,30 @@ export class LoginPage implements OnInit {
 
     ngOnInit() {
         this.platform.ready().then(() => {
+            this.menuCtrl.enable(false);
             this.native.statusIP().then((resp: boolean) => {
                 this.bool = resp;
             }).catch((err) => {
                 this.bool = false;
-            })
+            });
+            this.getLocalidad();
         });
     }
 
+    async ngLabels() {
+        await this.localidadService.etiquetas();
+    }
+
+    public leccionarLocalidad() {
+        this.spinnerDialog.show(null, "Espere...", true);
+        this.datarestService.getLocalidad(this.idio).then((data: any) => {
+            this.ngLabels();
+            this.spinnerDialog.hide();
+        }).catch((err) => {
+            console.log(err);
+            this.spinnerDialog.hide();
+        })
+    }
 
     public ipacction() {
         if (this.ip != '') {
@@ -145,103 +156,44 @@ export class LoginPage implements OnInit {
         }
     }
 
-    public estaupdate() {
-        this.native.statusConexion().then((est: any) => {
-            console.log(est);
-        }).catch((err: any) => {
-            console.log(err);
-        })
-    }
 
-
-    /*async estaupdate(estado: any) {
-            let ext = await this.native.statusConexion();
-            if (estado.detail.checked == true) {
-                if (ext == true) {
-                    this.est = 'EN LINEA';
-                    this.nativeStorage.setItem("MODO", true);
+    async estaupdate(estado: any) {
+        let ext = await this.native.statusConexion();
+        if (estado.detail.checked == true) {
+            if (ext == 1) {
+                this.est = 'EN LINEA';
+                this.nativeStorage.setItem("MODO", true).then(() => {
                     this.toast.show(`Modo en linea activado.`, '3000', 'top').subscribe(toast => {
                     });
-                } else {
-                    this.nativeStorage.setItem("MODO", false);
+                })
+            } else {
+                this.nativeStorage.setItem("MODO", false).then(() => {
                     this.modo = false;
                     this.est = 'FUERA DE LINEA';
                     this.toast.show(`No tienes conexion`, '3000', 'top').subscribe(toast => {
                     });
-                }
-            } else {
-                this.nativeStorage.setItem("MODO", false);
+                })
+            }
+        } else {
+            this.nativeStorage.setItem("MODO", false).then(() => {
+                this.toast.show(`Verifica tu conexion`, '3000', 'top').subscribe(toast => {
+                });
                 this.modo = false;
                 this.est = 'FUERA DE LINEA';
-            }
-        }
-
-
-
-
-        public getLocalidad() {
-            this.presentToast('Selecionar empresa');
-            this.spinnerDialog.show(null, "Espere...", true);
-            this.datarestService.getLocalidad(0).then((data: any) => {
-                this.localidadvalue = data;
-                this.spinnerDialog.hide();
-            }).catch((err) => {
-                console.log(err);
-                this.spinnerDialog.hide();
             })
         }
-
-        public leccionarLocalidad() {
-            this.spinnerDialog.show(null, "Espere...", true);
-            this.datarestService.getLocalidad(this.idio).then((data: any) => {
-                this.presentToast('En buena hora.');
-                this.ngLabels();
-                this.spinnerDialog.hide();
-            }).catch((err) => {
-                console.log(err);
-                this.spinnerDialog.hide();
-            })
-        }
+    }
 
 
-
-
-        ngOnInit() {
-
-            this.authService.canActivate().then(resp => {
-                if (resp != true) {
-                    this.navCrl.navigateRoot(`login`);
-                } else {
-                    //  this.navCrl.navigateRoot(`pedidos`);
-                    this.navCrl.navigateRoot(`home`);
-                }
-            });
-            this.storage.set('MODO', false);
-            this.menuCtrl.enable(false);
-        }
-
-        async ngLabels() {
-            this.etiquetas = await this.localidadService.etiquetas();
-        }
-
-        async presentToast(mensaje: string) {
-            const toast = await this.toastController.create({
-                message: mensaje,
-                duration: 2000,
-            });
-            toast.present();
-        }
-
-
-        public estadox() {
-            return new Promise((resolve, reject) => {
-                this.storage.get('MODO').then((resp: any) => {
-                    resolve(resp);
-                }).catch((err) => {
-                    reject(err);
-                })
-            });
-        }
-
- */
+    public getLocalidad() {
+        this.spinnerDialog.show(null, "Espere...", true);
+        this.datarestService.getLocalidad(0).then((data: any) => {
+            console.log(data);
+            this.localidadvalue = data;
+            this.spinnerDialog.hide();
+        }).catch((err) => {
+            console.log(err);
+            this.spinnerDialog.hide();
+        })
+    }
 }
