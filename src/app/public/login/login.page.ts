@@ -66,10 +66,10 @@ export class LoginPage implements OnInit {
             this.menuCtrl.enable(false);
             this.native.statusIP().then((resp: boolean) => {
                 this.bool = resp;
+                this.getLocalidad();
             }).catch((err) => {
                 this.bool = false;
             });
-            this.getLocalidad();
         });
     }
 
@@ -94,6 +94,7 @@ export class LoginPage implements OnInit {
                 this.bool = true;
                 this.toast.show(`Conectando con IP ${this.ip}.`, '3000', 'top').subscribe(toast => {
                 });
+                this.getLocalidad();
             }).catch((err: any) => {
                 console.log(err);
             })
