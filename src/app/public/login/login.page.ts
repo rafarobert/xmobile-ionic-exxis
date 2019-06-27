@@ -64,12 +64,22 @@ export class LoginPage implements OnInit {
     ngOnInit() {
         this.platform.ready().then(() => {
             this.menuCtrl.enable(false);
-            this.native.statusIP().then((resp: boolean) => {
-                this.bool = resp;
-                this.getLocalidad();
-            }).catch((err) => {
-                this.bool = false;
+            this.authService.canActivate().then(resp => {
+                if (resp != true) {
+                    this.navCrl.navigateRoot(`login`);
+
+                    this.native.statusIP().then((resp: boolean) => {
+                        this.bool = resp;
+                        this.getLocalidad();
+                    }).catch((err) => {
+                        this.bool = false;
+                    });
+
+                } else {
+                    this.navCrl.navigateRoot(`pedidos`);
+                }
             });
+
         });
     }
 
@@ -118,30 +128,31 @@ export class LoginPage implements OnInit {
                     plataformaPlataforma: this.device.platform,
                     plataformaEmei: this.uid.IMEI,
                 };
-                this.authenticationService.login(data).then((resp: any) => {
-                    if (resp.estado == 200) {
-                        this.navCrl.navigateRoot(`home`);
-                        // this.navCrl.navigateRoot(`pedidos`);
-                    }
-                }).catch((err: any) => {
-                    let dx = {
-                        estado: 200,
-                        mensaje: "usuario encontrado",
-                        token: "724877574f585949752d416449376e446c77625036636a35744164494b505830313536303337353430325f31353630333735343032",
-                        respuesta: {
-                            apellidoMPersona: null,
-                            apellidoPPersona: "Exxis",
-                            estadoPersona: 1,
-                            estadoUsuario: 1,
-                            idPersona: 1,
-                            idUsuario: 12,
-                            nombrePersona: "Administrador",
-                            nombreUsuario: "exxis",
+                this.authenticationService.login(data)
+                    .then((resp: any) => {
+                        if (resp.estado == 200) {
+                            this.navCrl.navigateRoot(`pedidos`);
                         }
-                    };
-                    this.storage.set("auth-token", dx).then(resp => {
-                        this.navCrl.navigateRoot(`home`);
-                    })
+                    }).catch((err: any) => {
+                    console.log(err);
+                    /* let dx = {
+                         estado: 200,
+                         mensaje: "usuario encontrado",
+                         token: "724877574f585949752d416449376e446c77625036636a35744164494b505830313536303337353430325f31353630333735343032",
+                         respuesta: {
+                             apellidoMPersona: null,
+                             apellidoPPersona: "Exxis",
+                             estadoPersona: 1,
+                             estadoUsuario: 1,
+                             idPersona: 1,
+                             idUsuario: 12,
+                             nombrePersona: "Administrador",
+                             nombreUsuario: "exxis",
+                         }
+                     };
+                     this.storage.set("auth-token", dx).then(resp => {
+                         this.navCrl.navigateRoot(`home`);
+                     })*/
                 });
             } else {
                 this.toast.show(`El password no puede ser nulo.`, '5000', 'top').subscribe(

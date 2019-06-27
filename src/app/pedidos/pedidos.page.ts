@@ -30,7 +30,7 @@ export class PedidosPage implements OnInit {
   }
 
   public crearPedido() {
-    this.navCrl.navigateForward(`detallepedido/244242244`);
+    this.navCrl.navigateForward(`detallepedido/null`);
   }
 
 }

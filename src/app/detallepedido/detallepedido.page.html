@@ -1,53 +1,59 @@
 <ion-header>
-  <ion-toolbar color="primary">
-    <ion-buttons slot="start">
-      <ion-back-button></ion-back-button>
-    </ion-buttons>
-    <ion-title *ngIf="tipo != 0"> Crear documento pedido</ion-title>
-    <ion-title *ngIf="tipo == 0"> Detalle pedido</ion-title>
-  </ion-toolbar>
+    <ion-toolbar color="primary">
+        <ion-buttons slot="start">
+            <ion-back-button></ion-back-button>
+        </ion-buttons>
+        <ion-title *ngIf="tipo == null"> Crear documento pedido</ion-title>
+        <ion-title *ngIf="tipo != null"> Detalle pedido</ion-title>
+    </ion-toolbar>
 </ion-header>
 <ion-content>
-  <ion-card *ngIf="CardName != ''" (click)="actionCliente()">
-    <ion-card-header>
-      <ion-card-title>Cliente : {{CardName}}</ion-card-title>
-      <ion-card-subtitle>Registrado: {{registrado}}</ion-card-subtitle>
-    </ion-card-header>
-    <ion-card-content>
-      <p><b>Direccion : </b> {{Address}}</p>
-    </ion-card-content>
-  </ion-card>
-  <br />
-  <ion-button *ngIf="CardName == ''" expand="block" color="success" (click)="actionCliente()" fill="outline">Seleccionar
-    Cliente
-  </ion-button>
-  <ion-button expand="block" color="primary" shape="round" (click)="agregarProductos()" fill="clear">Agregar
-    productos
-  </ion-button>
-  <ion-list>
-    <ion-item *ngFor="let item of productos" (click)="detalleProducto()">
-      <ion-avatar slot="start">
-        <img src="../assets/man.png" />
-      </ion-avatar>
-      <ion-label>
-        <p><b>{{item.ItemName}}</b> </p>
-        <p>{{item.SalesUnit}} </p>
-        <p> <b>Cantidad : </b>{{item.cantidad}} </p>
-      </ion-label>
-    </ion-item>
-  </ion-list>
+    <br/>
+    <div class="ion-text-center">
+        <ion-button *ngIf="CardName == ''" color="primary" shape="round" (click)="actionCliente()" fill="outline">
+            Seleccionar cliente
+        </ion-button>
+    </div>
+
+
+    <ion-card *ngIf="CardName != ''" (click)="actionCliente()">
+        <ion-card-header>
+            <ion-card-title>Cliente : {{CardName}}</ion-card-title>
+            <ion-card-subtitle>Registrado: {{registrado}}</ion-card-subtitle>
+        </ion-card-header>
+        <ion-card-content>
+            <p><b>Direccion : </b> {{Address}}</p>
+        </ion-card-content>
+    </ion-card>
+
+    <ion-button expand="block" color="primary" shape="round" (click)="agregarProductos()" fill="clear">Agregar
+        productos
+    </ion-button>
+
+    <ion-list>
+        <ion-item *ngFor="let item of productos" (click)="detalleProducto()">
+            <ion-avatar slot="start">
+                <img src="../assets/man.png"/>
+            </ion-avatar>
+            <ion-label>
+                <p><b>{{item.ItemName}}</b></p>
+                <p>{{item.SalesUnit}} </p>
+                <p><b>Cantidad : </b>{{item.cantidad}} </p>
+            </ion-label>
+        </ion-item>
+    </ion-list>
 </ion-content>
 <ion-footer>
-  <ion-grid>
-    <ion-row>
-      <ion-col size="8">
-        <ion-button expand="block" color="primary" shape="round" fill="clear">
-          Enviar pedido
-        </ion-button>
-      </ion-col>
-      <ion-col size="4">
-        <p class="ion-text-center"><b>Total: 400</b></p>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+    <ion-grid>
+        <ion-row>
+            <ion-col size="8">
+                <ion-button expand="block" color="primary" shape="round" fill="clear">
+                    Enviar pedido
+                </ion-button>
+            </ion-col>
+            <ion-col size="4">
+                <p class="ion-text-center"><b>Total: 400</b></p>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
 </ion-footer>

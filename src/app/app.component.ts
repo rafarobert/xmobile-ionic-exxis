@@ -33,11 +33,7 @@ export class AppComponent {
    url: '/home',
    icon: 'home'
  },
-{
-  title: 'Doc. Pedidos',
-  url: '/pedidos',
-  icon: 'document'
-}, {
+, {
            title: 'Historial',
            url: '/list',
            icon: 'paper'
@@ -108,6 +104,11 @@ export class AppComponent {
     async ngLabels() {
         this.etiquetas = await this.localidadService.etiquetas();
         this.appPages = [
+            {
+                title: 'Doc. Pedidos',
+                url: '/pedidos',
+                icon: 'document'
+            },
             {
                 title: this.etiquetas.men_Product,
                 url: '/home',

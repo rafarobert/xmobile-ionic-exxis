@@ -26,17 +26,9 @@ export class AuthenticationService {
         })
     }
 
-    /* this.httpx.post(this.path, data).subscribe((data: any) => {
-          this.spinnerDialog.hide();
-          resolve(data);
-      }, (error: any) => {
-          this.spinnerDialog.hide();
-          reject(error);
-      })*/
     public login(data: any) {
         return new Promise((resolve, reject) => {
             this.spinnerDialog.show(null, "Espere...", true);
-
             this.http.post(this.path, data, {}).then((data: any) => {
                 let resp = JSON.parse(data.data);
                 console.log(resp);
@@ -50,12 +42,12 @@ export class AuthenticationService {
                         resolve(resp);
                         break;
                     case (201):
-                        this.toast.show(resp.mensaje, '5000', 'center').subscribe(toast => {
+                        this.toast.show(resp.mensaje, '5000', 'top').subscribe(toast => {
                         });
                         resolve(201);
                         break;
                     case (202):
-                        this.toast.show(resp.mensaje, '5000', 'center').subscribe(toast => {
+                        this.toast.show(resp.mensaje, '5000', 'top').subscribe(toast => {
                         });
                         resolve(202);
                         break;
