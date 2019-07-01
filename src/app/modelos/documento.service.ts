@@ -1,17 +1,17 @@
-import { Injectable } from '@angular/core';
-import { ModelService } from './model.service';
+import {Injectable} from '@angular/core';
+import {ModelService} from './model.service';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class DocumentoService {
 
-  constructor(private model: ModelService) {
-    this.createTable();
-  }
+    constructor(private model: ModelService) {
+        this.createTable();
+    }
 
-  public createTable() {
-    let sql = 'CREATE TABLE IF NOT EXISTS ordr (\n\
+    public createTable() {
+        let sql = 'CREATE TABLE IF NOT EXISTS ordr (\n\
       id integer NOT NULL PRIMARY KEY AUTOINCREMENT,\n\
       DocEntry integer NOT NULL,\n\
       DocNum integer NOT NULL,\n\
@@ -53,16 +53,46 @@ export class DocumentoService {
       U_4DOCUMENTOORIGEN varchar(10) DEFAULT NULL,\n\
       U_4MIGRADOCONCEPTO varchar(250) DEFAULT NULL,\n\
       U_4MIGRADO varchar(255) DEFAULT NULL,\n\
+      PriceListNum integer DEFAULT NULL,\n\
       estadosend integer DEFAULT 1,\n\
       fecharegistro varchar(12),\n\
-      fechaupdate varchar(12)\n\
+      fechaupdate varchar(12),\n\
+      fechasend varchar(12)\n\
     )';
-    this.model.exeDB().then((data: any) => {
-      data.executeSql(sql, []).then(() => {
-        console.log('Creado tabla Documentos');
-      }).catch((e: any) => {
-        console.log(e);
-      });
-    })
-  }
+        this.model.exeDB().then((data: any) => {
+            data.executeSql(sql, []).then(() => {
+                console.log('Creado tabla Documentos');
+            }).catch((e: any) => {
+                console.log(e);
+            });
+        })
+    }
+
+
+    public insert(data: any) {
+        let sql = "INSERT INTO ordr(id, DocEntry, DocNum, DocType, canceled, Printed, DocStatus, DocDate, DocDueDate, CardCode, CardName, NumAtCard, DiscPrcnt, DiscSum, DocCur, DocRate, DocTotal, PaidToDate, Ref1, Ref2, Comments, JrnlMemo, GroupNum, SlpCode, Series, TaxDate, LicTradNum,Address, UserSign, CreateDate, UserSign2,UpdateDate, U_4MOTIVOCANCELADO, U_4NIT, U_4RAZON_SOCIAL, U_LATITUD, U_LONGITUD, U_4SUBTOTAL, U_4DOCUMENTOORIGEN, U_4MIGRADOCONCEPTO, U_4MIGRADO, estadosend, fecharegistro, fechaupdate,fechasend)" +
+            "VALUES(NULL, 0, 0, '', '', '', '', '" + data.DocDate + "', '" + data.DocDueDate + "', '" + data.CardCode + "', '" + data.CardName + "', '', 0, 0, '', 0, 0, 0, '', '', '', '', 0, 0, '" + data.Series + "', '" + data.TaxDate + "', '', '" + data.Address + "', 0, '', 0, '', 0, '', '', '', '', 0, '', '', " + data.PriceListNum + ", 0, '" + data.fecharegistro + "', '','')";
+        this.model.exeDB().then((data: any) => {
+            data.executeSql(sql, []).then((resp: any) => {
+                console.log(resp);
+            }).catch((e: any) => {
+                console.log(e);
+            });
+        })
+    }
+
+
+    public findAll() {
+        return new Promise((resolve, reject) => {
+            let sql = "SELECT * FROM ordr ORDER BY id DESC";
+            this.model.exeDB().then((data: any) => {
+                data.executeSql(sql, []).then((data: any) => {
+                    resolve(data);
+                }).catch((e: any) => {
+                    reject(e);
+                });
+            })
+        })
+    }
+
 }

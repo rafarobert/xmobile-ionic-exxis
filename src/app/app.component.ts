@@ -27,6 +27,7 @@ export class AppComponent {
     public nombrePersona: string;
     public apellidoMPersona: string;
     public nombreUsuario: string;
+
     /* {
    title: 'Inicio',
    url: '/home',

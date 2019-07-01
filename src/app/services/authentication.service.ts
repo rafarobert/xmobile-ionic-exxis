@@ -66,6 +66,16 @@ export class AuthenticationService {
         })
     }
 
+    public getUser() {
+        return new Promise((resolve, reject) => {
+            this.storage.get(TOKEN_KEY).then((resp: any) => {
+                resolve(resp);
+            }).catch((err: any) => {
+                reject(err);
+            })
+        })
+    }
+
     public checkToken() {
         return this.storage.get(TOKEN_KEY).then(resp => {
             if (resp) {

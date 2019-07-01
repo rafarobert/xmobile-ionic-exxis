@@ -14,6 +14,9 @@ export class SincronizarPage implements OnInit {
     public clientes: boolean;
     public productos: boolean;
     public usuarios: boolean;
+    public almacenes: boolean;
+    public listprecios: boolean;
+    public listunidades: boolean;
     public todos: boolean;
     public estadoproductos: boolean;
     public estados: any;
@@ -22,22 +25,32 @@ export class SincronizarPage implements OnInit {
     public loadproductos: boolean;
     public loadclientes: boolean;
     public loadusuarios: boolean;
+    public loadalmacenes: boolean;
+    public loadlistprecios: boolean;
+    public loadlistunidades: boolean;
     public isenabled: boolean;
     public etiquetas: any;
 
     constructor(private data: DatarestService, private uid: Uid,
-                private toast: Toast, private navCrl: NavController, public  localidadService: LocalidadService) {
+                private toast: Toast, private navCrl: NavController,
+                public  localidadService: LocalidadService) {
         this.estados = [];
         this.aux = [];
         this.todos = false;
         this.clientes = false;
         this.productos = false;
         this.usuarios = false;
+        this.almacenes = false;
+        this.listprecios = false;
+        this.listunidades = false;
         this.estadoproductos = false;
         this.contador = 0;
         this.loadproductos = false;
         this.loadclientes = false;
         this.loadusuarios = false;
+        this.loadalmacenes = false;
+        this.loadlistprecios = false;
+        this.loadlistunidades = false;
         this.isenabled = true;
         this.etiquetas = [];
     }
@@ -54,7 +67,10 @@ export class SincronizarPage implements OnInit {
         this.estados = [
             {name: "productos", estado: this.productos},
             {name: "clientes", estado: this.clientes},
-            {name: "usuarios", estado: this.usuarios}
+            {name: "usuarios", estado: this.usuarios},
+            {name: "almacenes", estado: this.almacenes},
+            {name: "listprecios", estado: this.listprecios},
+            {name: "listunidades", estado: this.listunidades},
         ];
     }
 
@@ -63,16 +79,25 @@ export class SincronizarPage implements OnInit {
             this.clientes = true;
             this.productos = true;
             this.usuarios = true;
+            this.almacenes = true;
+            this.listprecios = true;
+            this.listunidades = true;
         } else {
             this.clientes = false;
             this.productos = false;
             this.usuarios = false;
+            this.almacenes = false;
+            this.listprecios = false;
+            this.listunidades = false;
         }
 
         this.estados = [
             {name: "productos", estado: this.productos},
             {name: "clientes", estado: this.clientes},
-            {name: "usuarios", estado: this.usuarios}
+            {name: "usuarios", estado: this.usuarios},
+            {name: "almacenes", estado: this.almacenes},
+            {name: "listprecios", estado: this.listprecios},
+            {name: "listunidades", estado: this.listunidades},
         ];
     }
 
@@ -120,6 +145,50 @@ export class SincronizarPage implements OnInit {
         })
     }
 
+
+    private asingAlmacenes() {
+        this.loadalmacenes = true;
+        this.data.almacenes(this.getImei())
+            .then(data => {
+                console.log(data);
+                this.contador++;
+                this.iniasing();
+                this.loadalmacenes = false;
+            }).catch((err) => {
+            console.log(err);
+            this.loadalmacenes = false;
+        })
+    }
+
+    private asingPrecios() {
+        this.loadlistprecios = true;
+        this.data.listaprecios(this.getImei())
+            .then(data => {
+                console.log(data);
+                this.contador++;
+                this.iniasing();
+                this.loadlistprecios = false;
+            }).catch((err) => {
+            console.log(err);
+            this.loadlistprecios = false;
+        })
+    }
+
+    private asingUnidades() {
+        this.loadlistunidades = true;
+        this.data.listaunidades(this.getImei())
+            .then(data => {
+                console.log(data);
+                this.contador++;
+                this.iniasing();
+                this.loadlistunidades = false;
+            }).catch((err) => {
+            console.log(err);
+            this.loadlistunidades = false;
+        })
+    }
+
+
     public iniasing() {
         if (this.contador < this.aux.length) {
             let name = this.aux[this.contador].name;
@@ -132,6 +201,15 @@ export class SincronizarPage implements OnInit {
                     break;
                 case "usuarios":
                     this.asingUsuarios();
+                    break;
+                case "almacenes":
+                    this.asingAlmacenes();
+                    break;
+                case "listprecios":
+                    this.asingPrecios();
+                    break;
+                case "listunidades":
+                    this.asingUnidades();
                     break;
             }
         } else {

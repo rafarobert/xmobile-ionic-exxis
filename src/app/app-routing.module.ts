@@ -39,6 +39,7 @@ const routes: Routes = [
     {path: 'modalproductos', loadChildren: './modalproductos/modalproductos.module#ModalproductosPageModule'},
     {path: 'cliente/:id', loadChildren: './cliente/cliente.module#ClientePageModule'},
   { path: 'setting', loadChildren: './setting/setting.module#SettingPageModule' },
+  { path: 'detalleventa', loadChildren: './detalleventa/detalleventa.module#DetalleventaPageModule' },
 ];
 
 @NgModule({

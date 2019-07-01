@@ -132,6 +132,67 @@ export class DatarestService {
     }
 
 
+    public almacenes(emei: string) {
+        return new Promise((resolve, reject) => {
+            this.nativeStorage.getItem('IP').then((url: any) => {
+                this.storage.get(TOKEN_KEY).then(resp => {
+                    this.http.get(url + "api/almacenes?access-token=" + resp.token, {}, {})
+                        .then((data: any) => {
+                            let json = JSON.parse(data.data);
+                            this.nativeStorage.setItem('almacenes-db', json.value).then(() => {
+                                resolve('Almacenes Almacendos');
+                            }, error => {
+                                reject(error);
+                            });
+                        }).catch((err: any) => {
+                        console.log(err);
+                    })
+                })
+            })
+        })
+    }
+
+    public listaprecios(emei: string) {
+        return new Promise((resolve, reject) => {
+            this.nativeStorage.getItem('IP').then((url: any) => {
+                this.storage.get(TOKEN_KEY).then(resp => {
+                    this.http.get(url + "api/listaprecios?access-token=" + resp.token, {}, {})
+                        .then((data: any) => {
+                            let json = JSON.parse(data.data);
+                            this.nativeStorage.setItem('precios-db', json.value).then(() => {
+                                resolve('Precios Almacendos');
+                            }, error => {
+                                reject(error);
+                            });
+                        }).catch((err: any) => {
+                        console.log(err);
+                    })
+                })
+            })
+        })
+    }
+
+    public listaunidades(emei: string) {
+        return new Promise((resolve, reject) => {
+            this.nativeStorage.getItem('IP').then((url: any) => {
+                this.storage.get(TOKEN_KEY).then(resp => {
+                    this.http.get(url + "api/listaunidades?access-token=" + resp.token, {}, {})
+                        .then((data: any) => {
+                            let json = JSON.parse(data.data);
+                            this.nativeStorage.setItem('unidades-db', json.value).then(() => {
+                                resolve('Unidades Almacendos');
+                            }, error => {
+                                reject(error);
+                            });
+                        }).catch((err: any) => {
+                        console.log(err);
+                    })
+                })
+            })
+        })
+    }
+
+
     public changePass(passtext: any) {
         return new Promise((resolve, reject) => {
             this.nativeStorage.getItem('IP').then((url: any) => {

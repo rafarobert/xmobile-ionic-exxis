@@ -19,6 +19,7 @@ import {AppRoutingModule} from './app-routing.module';
 import {IonicStorageModule} from '@ionic/storage';
 import {ModalclientePageModule} from './modalcliente/modalcliente.module';
 import {ModalproductosPageModule} from './modalproductos/modalproductos.module';
+import {DetalleventaPageModule} from "./detalleventa/detalleventa.module"
 import {Dialogs} from '@ionic-native/dialogs/ngx';
 import {ActionSheet} from '@ionic-native/action-sheet/ngx';
 
@@ -32,6 +33,7 @@ import {ActionSheet} from '@ionic-native/action-sheet/ngx';
         AppRoutingModule,
         ModalclientePageModule,
         ModalproductosPageModule,
+        DetalleventaPageModule,
         IonicStorageModule.forRoot()
     ],
     providers: [

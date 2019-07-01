@@ -1,46 +1,44 @@
 <ion-header>
-  <ion-toolbar color="primary">
-    <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
-    </ion-buttons>
-    <ion-title>Documentos pedidos</ion-title>
-    <ion-buttons slot="end">
-      <ion-button (click)="pageSincronizar()">
-        <ion-icon name="sync"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
+    <ion-toolbar color="primary">
+        <ion-buttons slot="start">
+            <ion-menu-button></ion-menu-button>
+        </ion-buttons>
+        <ion-title>Documentos pedidos</ion-title>
+        <ion-buttons slot="end">
+            <ion-button (click)="pageSincronizar()">
+                <ion-icon name="sync"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
 </ion-header>
 <ion-content>
 
 
-  <div class="ion-text-center">
-    <h5>No existe ningun documento de pedido</h5>
-    <ion-button color="primary" shape="round" (click)="crearPedido()" fill="outline">Crear documento de pedido
-    </ion-button>
-  </div>
+    <div class="ion-text-center" *ngIf="btnCrear == 0">
+        <h5>No existe ningun documento de pedido</h5>
+        <ion-button color="primary" shape="round" (click)="crearPedido()" fill="outline">Crear documento de pedido
+        </ion-button>
+    </div>
 
-  <!--ion-list>
-    <ion-item (click)="detallePedidos()">
-      <ion-avatar slot="start">
-        <img src="../assets/man.png" />
-      </ion-avatar>
-      <ion-label>
-        <p><b>NUM: ######</b> </p>
-        <p>Cliente: cliente name </p>
-        <p>Creado: 20-20-2019</p>
-        <p>Fecha enviado: 20-20-2019 </p>
-      </ion-label>
-    </ion-item>
-  </ion-list-->
-
-
+    <ion-list>
+        <ion-item *ngFor="let item of ventasArr" (click)="detallePedidos()">
+            <ion-avatar slot="start">
+                <img src="../assets/man.png"/>
+            </ion-avatar>
+            <ion-label>
+                <p><b>NUM: {{item.id}}</b></p>
+                <p>Cliente: {{item.CardName}} </p>
+                <p>Creado: {{item.fecharegistro}}</p>
+                <p>Fecha enviado: {{item.fechasend}} </p>
+            </ion-label>
+        </ion-item>
+    </ion-list>
 
 
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button color="primary" (click)="crearPedido()">
-      <ion-icon name="add"></ion-icon>
-    </ion-fab-button>
-  </ion-fab>
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+        <ion-fab-button color="primary" (click)="crearPedido()">
+            <ion-icon name="add"></ion-icon>
+        </ion-fab-button>
+    </ion-fab>
 
 </ion-content>

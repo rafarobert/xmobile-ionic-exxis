@@ -1,0 +1,67 @@
+<ion-header>
+    <ion-toolbar color="primary">
+        <ion-title>Detalle de la venta</ion-title>
+        <ion-buttons slot="end">
+            <ion-button (click)="cerrar(1)">
+                <ion-icon name="close"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+<ion-content>
+    <ion-card>
+        <ion-card-header>
+        </ion-card-header>
+        <ion-card-content>
+            <ion-grid>
+                <ion-row>
+                    <ion-col>
+                        Comprometido: {{comprometido}}
+                    </ion-col>
+                    <ion-col>
+                        Disponible: {{disponible}}
+                    </ion-col>
+                </ion-row>
+            </ion-grid>
+            <ion-list>
+                <ion-item (click)="almacenes()">
+                    <ion-label>Almacen</ion-label>
+                    <ion-label>{{almacenName}}</ion-label>
+                    <ion-button fill="clear" slot="end">
+                        <ion-icon name="arrow-dropdown"></ion-icon>
+                    </ion-button>
+                </ion-item>
+
+
+                <ion-item (click)="selectUnidades()">
+                    <ion-label>Unidades</ion-label>
+                    <ion-button fill="clear" slot="end">
+                        <ion-icon name="arrow-dropdown"></ion-icon>
+                    </ion-button>
+                </ion-item>
+
+                <ion-item>
+                    <ion-label position="fixed">Cantidad</ion-label>
+                    <ion-input [(ngModel)]="cantidad" (ngModelChange)="calTotal()" type="number"></ion-input>
+                </ion-item>
+                <ion-item>
+                    <ion-label position="fixed">Precio</ion-label>
+                    <ion-input [(ngModel)]="presio" (ngModelChange)="calTotal()" type="number"></ion-input>
+                </ion-item>
+                <ion-item>
+                    <ion-label position="fixed">Descuento</ion-label>
+                    <ion-input [(ngModel)]="descuento" (ngModelChange)="calTotal()" type="number"></ion-input>
+                </ion-item>
+                <ion-item-divider>
+                </ion-item-divider>
+                <ion-item>
+                    <ion-label position="fixed"> Total:</ion-label>
+                    <ion-button fill="outline" slot="end">{{total}}</ion-button>
+                </ion-item>
+            </ion-list>
+        </ion-card-content>
+    </ion-card>
+    <div class="ion-text-center">
+        <ion-button fill="outline" (click)="agregar()"> AGERGAR</ion-button>
+    </div>
+</ion-content>
