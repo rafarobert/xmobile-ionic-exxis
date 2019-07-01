@@ -3,18 +3,17 @@
         <ion-buttons slot="start">
             <ion-back-button></ion-back-button>
         </ion-buttons>
-        <ion-title *ngIf="tipo == null"> Crear documento pedido</ion-title>
-        <ion-title *ngIf="tipo != null"> Detalle pedido</ion-title>
+        <ion-title *ngIf="tipo != null"> Crear pedido</ion-title>
+        <ion-title *ngIf="tipo == null"> Detalle pedido</ion-title>
     </ion-toolbar>
 </ion-header>
 <ion-content>
     <br/>
     <div class="ion-text-center">
-        <ion-button *ngIf="CardName == ''" color="primary" shape="round" (click)="actionCliente()" fill="outline">
+        <ion-button *ngIf="CardName == ''" color="primary" shape="round" (click)="actionCliente()">
             Seleccionar cliente
         </ion-button>
     </div>
-
 
     <ion-card *ngIf="CardName != ''" (click)="actionCliente()">
         <ion-card-header>
@@ -22,18 +21,22 @@
             <ion-card-subtitle>Registrado: {{registrado}}</ion-card-subtitle>
         </ion-card-header>
         <ion-card-content>
-            <p><b>Direccion : </b> {{Address}}</p>
+            <p><b>Dirección : </b> {{Address}}</p>
+            <p><b>Sucursal : </b> {{Address}}</p>
         </ion-card-content>
     </ion-card>
 
-    <ion-button expand="block" color="primary" shape="round" (click)="agregarProductos()" fill="clear">Agregar
-        productos
-    </ion-button>
+    <div class="ion-text-center">
+        <ion-button color="warning" *ngIf="CardName != ''" shape="round"
+                    (click)="agregarProductos()">
+            Agregar producto
+        </ion-button>
+    </div>
 
     <ion-list>
         <ion-item *ngFor="let item of productos" (click)="detalleProducto()">
             <ion-avatar slot="start">
-                <img src="../assets/man.png"/>
+                <img src="../assets/product.svg"/>
             </ion-avatar>
             <ion-label>
                 <p><b>{{item.ItemName}}</b></p>
@@ -42,6 +45,8 @@
             </ion-label>
         </ion-item>
     </ion-list>
+
+
 </ion-content>
 <ion-footer>
     <ion-grid>

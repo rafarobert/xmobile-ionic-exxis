@@ -143,10 +143,6 @@ export class DetallepedidoPage implements OnInit {
         }
     }
 
-
-    /********************/
-
-
     public selectDetalle(data: any) {
         console.log(data);
         let f = new Date();
@@ -162,11 +158,6 @@ export class DetallepedidoPage implements OnInit {
             idDocumento: data.data.ItemCode,
             fechaAdd: f.getFullYear() + "-" + (f.getMonth() + 1) + "-" + f.getDate()
         }
-        console.log(producto);
-    }
-
-    public addDetalle() {
-
     }
 
     async agregarProductos() {
@@ -178,7 +169,6 @@ export class DetallepedidoPage implements OnInit {
         modal.onDidDismiss().then((data) => {
             if (data != undefined) {
                 this.selectDetalle(data);
-                //this.productos.push(data['data']);
             }
         });
         return await modal.present();

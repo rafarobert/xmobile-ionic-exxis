@@ -22,9 +22,12 @@ export class DetalleventaPage implements OnInit {
     public unidad: number;
     public comprometido: number;
     public disponible: number;
-    public datapro: any;
+    public dataproductos: any;
     public almacenesArr: any;
     public opcionesUnidades: any;
+    public currency: any;
+    public unidadText: any;
+    public productoName: any;
 
     constructor(public navParams: NavParams,
                 private almacenService: AlmacenService,
@@ -38,68 +41,81 @@ export class DetalleventaPage implements OnInit {
         this.cantidad = 1;
         this.presio = 0;
         this.descuento = 0;
+        this.currency = '';
         this.unidad = 0;
-        this.datapro = [];
-        this.datapro = navParams.data;
+        this.dataproductos = [];
+        this.dataproductos = navParams.data;
         this.opcionesUnidades = [];
         this.almacenesArr = [];
         this.almacenName = '';
         this.almacenId = '';
+        this.unidadText = '';
+        this.productoName = 'Detalles.';
     }
 
     public getPrecioproducto() {
         return new Promise((resolve, reject) => {
-            resolve(_.find(this.datapro.ItemPrices, {'PriceList': this.datapro.documentos.PriceListNum}));
+            resolve(_.find(this.dataproductos.ItemPrices, {
+                'PriceList': this.dataproductos.documentos.PriceListNum
+            }));
         })
+    }
+
+
+    async getUnidad() {
+        let precioDefault: any;
+        let preciodefault2: any;
+        let datadefault: any;
+        precioDefault = await this.getPrecioproducto();
+        precioDefault.unidad = this.dataproductos.InventoryUOM;
+        preciodefault2 = await this.preciosService.findOne(precioDefault.PriceList);
+        datadefault = Object.assign(precioDefault, preciodefault2);
+        this.opcionesUnidades.push({
+            text: datadefault.unidad,
+            handler: () => {
+                this.presio = datadefault.Price;
+                this.currency = datadefault.Currency;
+                this.unidadText = datadefault.unidad;
+                this.calTotal();
+            }
+        });
+        this.unidadText = datadefault.unidad;
+        this.presio = datadefault.Price;
+        this.currency = datadefault.Currency;
+        if (datadefault.UoMPrices.length > 0) {
+            for (let ix of datadefault.UoMPrices) {
+                this.unidadesService.findOne(ix.UoMEntry).then((data: any) => {
+                    this.opcionesUnidades.push({
+                        text: data.Name,
+                        handler: () => {
+                            this.presio = ix.Price;
+                            this.currency = ix.Currency;
+                            this.unidadText = data.Name;
+                            this.calTotal();
+                        }
+                    });
+                }).catch((err) => {
+                    console.log(err);
+                })
+            }
+        }
     }
 
     async selectUnidades() {
         const actionSheetx = await this.actionSheetController.create({
-            header: 'Seleccionar unidad',
+            header: 'SELECCIONAR UNIDADES:',
             buttons: this.opcionesUnidades
         });
         await actionSheetx.present();
     }
 
-    public getrelax() {
-        this.getPrecioproducto().then((resp: any) => {
-            console.log("Productos precio");
-            console.log(resp);
-            if (resp.UoMPrices.length > 0) {
-                for (let i of resp.UoMPrices) {
-                    this.unidadesService.findOne(i.UoMEntry).then((data: any) => {
-                        console.log("Datos Unidades");
-                        console.log(data);
-                        this.opcionesUnidades.push({
-                            text: data.Name,
-                            role: 'destructive',
-                            handler: () => {
-                                console.log(data.Name);
-                            }
-                        });
-                    }).catch((err) => {
-                        console.log(err);
-                    })
-                }
-            }
-            this.preciosService.findOne(resp.PriceList).then((data: any) => {
-                console.log("Precio de unidades");
-                console.log(data);
-            }).catch((error: any) => {
-                console.log(error)
-            })
-        }).catch((err: any) => {
-            console.log(err);
-        })
-    }
-
-
     ngOnInit() {
-        this.comprometido = this.datapro.QuantityOrderedFromVendors;
-        this.disponible = this.datapro.QuantityOnStock;
+        this.comprometido = this.dataproductos.QuantityOrderedFromVendors;
+        this.disponible = this.dataproductos.QuantityOnStock;
+        this.productoName = this.dataproductos.documentos.CardName;
         this.calTotal();
         this.getAlmacen();
-        //this.getrelax();
+        this.getUnidad();
     }
 
 
@@ -159,6 +175,10 @@ export class DetalleventaPage implements OnInit {
             presio: this.presio,
             descuento: this.descuento,
             total: this.total,
+            unidad: this.unidadText,
+            comprometido: this.comprometido,
+            disponible: this.disponible,
+            currency: this.currency,
         });
     }
 

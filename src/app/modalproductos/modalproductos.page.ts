@@ -19,11 +19,9 @@ export class ModalproductosPage implements OnInit {
         this.items = [];
         this.cantidad = 0;
         this.document = navParams.data;
-        console.log(navParams.data);
     }
 
     ngOnInit() {
-
         this.nativeStorage.getItem('productos-db').then((data: any) => {
             this.items = data;
         }, error => {
@@ -36,8 +34,9 @@ export class ModalproductosPage implements OnInit {
         this.modalController.dismiss();
     }
 
-    public respuesta() {
-
+    public registrarDetalle(datos: any) {
+        console.log(this.document);
+        console.log(datos);
     }
 
     async detalleVenta(producto: any) {
@@ -48,8 +47,8 @@ export class ModalproductosPage implements OnInit {
         });
         modalx.onDidDismiss().then((data: any) => {
             if (data.data != 1) {
-                console.log(data.data);
-                this.cerrar();
+                this.registrarDetalle(data.data);
+                //this.cerrar();
             }
         });
         return await modalx.present();
