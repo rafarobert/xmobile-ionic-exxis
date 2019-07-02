@@ -47,16 +47,30 @@ export class DetallesService {
         })
     }
 
-
     public insert(data: any) {
-        let sql = "INSERT INTO rdr1(id, DocEntry, DocNum, LineNum, BaseType, BaseEntry, BaseLine, LineStatus, ItemCode, Dscription, Quantity, OpenQty, Price, Currency, DiscPrcnt, LineTotal, WhsCode, CodeBars, PriceAfVAT, TaxCode, U_4DESCUENTO, U_4LOTE, GrossBase, idDocumento, fechaAdd) \n" +
-            "VALUES (id, 0, 0, 0, 0, 0, 0, 0, ItemCode, Dscription, Quantity, 0, Price, Currency, 0, LineTotal, WhsCode, '', 0, '', 0, 0, GrossBase, idDocumento, fechaAdd)";
-        this.model.exeDB().then((data: any) => {
-            data.executeSql(sql, []).then((resp: any) => {
-                console.log(resp);
-            }).catch((e: any) => {
-                console.log(e);
-            });
+        return new Promise((resolve, reject) => {
+            let sql = "INSERT INTO rdr1(id, DocEntry, DocNum, LineNum, BaseType, BaseEntry, BaseLine, LineStatus, ItemCode, Dscription, Quantity, OpenQty, Price, Currency, DiscPrcnt, LineTotal, WhsCode, CodeBars, PriceAfVAT, TaxCode, U_4DESCUENTO, U_4LOTE, GrossBase, idDocumento, fechaAdd)";
+            sql += "VALUES (NULL, 0, 0, 0, 0, 0, 0, '', '" + data.ItemCode + "', '" + data.Dscription + "', '" + data.Quantity + "', 0, " + data.Price + ", '" + data.Currency + "', 0, " + data.LineTotal + ", '" + data.WhsCode + "', '', 0, '', 0, '', " + data.GrossBase + ", " + data.idDocumento + ", '" + data.fechaAdd + "')";
+            this.model.exeDB().then((data: any) => {
+                data.executeSql(sql, []).then((resp: any) => {
+                    resolve(resp);
+                }).catch((e: any) => {
+                    reject(e);
+                });
+            })
+        })
+    }
+
+    public findWhere(id: any) {
+        return new Promise((resolve, reject) => {
+            let sql = "SELECT * FROM rdr1 WHERE idDocumento = " + id;
+            this.model.exeDB().then((data: any) => {
+                data.executeSql(sql, []).then((resp: any) => {
+                    resolve(resp);
+                }).catch((e: any) => {
+                    reject(e);
+                });
+            })
         })
     }
 

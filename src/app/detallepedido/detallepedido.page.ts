@@ -19,6 +19,7 @@ export class DetallepedidoPage implements OnInit {
     public header: any;
     public registrado: any;
     public document: any;
+    public documentData: any;
 
     constructor(private activatedRoute: ActivatedRoute,
                 public actionSheetController: ActionSheetController,
@@ -101,7 +102,13 @@ export class DetallepedidoPage implements OnInit {
                     fechasend: this.registrado,
                 }
             }
-            this.modelDocument.insert(this.document);
+            this.modelDocument.insert(this.document)
+                .then((dx: any) => {
+                    this.documentData = dx;
+                })
+                .catch((err: any) => {
+                    console.log(err);
+                });
         }).catch((err: any) => {
             console.log(err);
         })
@@ -116,7 +123,6 @@ export class DetallepedidoPage implements OnInit {
         }
 
     }
-
 
     async presentModal() {
         const modal = await this.modalController.create({
@@ -143,38 +149,19 @@ export class DetallepedidoPage implements OnInit {
         }
     }
 
-    public selectDetalle(data: any) {
-        console.log(data);
-        let f = new Date();
-        let producto = {
-            ItemCode: data.data.ItemCode,
-            Dscription: '',
-            Quantity: 3, // cantidad
-            Price: 0, // presio
-            Currency: data.data.ItemCode,
-            WhsCode: data.data.ItemCode,
-            LineTotal: data.data.ItemCode,
-            GrossBase: data.data.ItemCode,
-            idDocumento: data.data.ItemCode,
-            fechaAdd: f.getFullYear() + "-" + (f.getMonth() + 1) + "-" + f.getDate()
-        }
-    }
 
     async agregarProductos() {
+        this.document.id = this.documentData.id;
         let doc = this.document;
         const modal = await this.modalController.create({
             component: ModalproductosPage,
             componentProps: doc
         });
-        modal.onDidDismiss().then((data) => {
+        modal.onDidDismiss().then((data: any) => {
             if (data != undefined) {
-                this.selectDetalle(data);
+                console.log(data);
             }
         });
         return await modal.present();
-    }
-
-    public detalleProducto() {
-
     }
 }

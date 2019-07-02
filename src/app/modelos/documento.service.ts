@@ -70,14 +70,36 @@ export class DocumentoService {
 
 
     public insert(data: any) {
-        let sql = "INSERT INTO ordr(id, DocEntry, DocNum, DocType, canceled, Printed, DocStatus, DocDate, DocDueDate, CardCode, CardName, NumAtCard, DiscPrcnt, DiscSum, DocCur, DocRate, DocTotal, PaidToDate, Ref1, Ref2, Comments, JrnlMemo, GroupNum, SlpCode, Series, TaxDate, LicTradNum,Address, UserSign, CreateDate, UserSign2,UpdateDate, U_4MOTIVOCANCELADO, U_4NIT, U_4RAZON_SOCIAL, U_LATITUD, U_LONGITUD, U_4SUBTOTAL, U_4DOCUMENTOORIGEN, U_4MIGRADOCONCEPTO, U_4MIGRADO, estadosend, fecharegistro, fechaupdate,fechasend)" +
-            "VALUES(NULL, 0, 0, '', '', '', '', '" + data.DocDate + "', '" + data.DocDueDate + "', '" + data.CardCode + "', '" + data.CardName + "', '', 0, 0, '', 0, 0, 0, '', '', '', '', 0, 0, '" + data.Series + "', '" + data.TaxDate + "', '', '" + data.Address + "', 0, '', 0, '', 0, '', '', '', '', 0, '', '', " + data.PriceListNum + ", 0, '" + data.fecharegistro + "', '','')";
-        this.model.exeDB().then((data: any) => {
-            data.executeSql(sql, []).then((resp: any) => {
-                console.log(resp);
-            }).catch((e: any) => {
-                console.log(e);
-            });
+        return new Promise((resolve, reject) => {
+            let sql = "INSERT INTO ordr(id, DocEntry, DocNum, DocType, canceled, Printed, DocStatus, DocDate, DocDueDate, CardCode, CardName, NumAtCard, DiscPrcnt, DiscSum, DocCur, DocRate, DocTotal, PaidToDate, Ref1, Ref2, Comments, JrnlMemo, GroupNum, SlpCode, Series, TaxDate, LicTradNum,Address, UserSign, CreateDate, UserSign2,UpdateDate, U_4MOTIVOCANCELADO, U_4NIT, U_4RAZON_SOCIAL, U_LATITUD, U_LONGITUD, U_4SUBTOTAL, U_4DOCUMENTOORIGEN, U_4MIGRADOCONCEPTO, U_4MIGRADO, estadosend, fecharegistro, fechaupdate,fechasend)" +
+                "VALUES(NULL, 0, 0, '', '', '', '', '" + data.DocDate + "', '" + data.DocDueDate + "', '" + data.CardCode + "', '" + data.CardName + "', '', 0, 0, '', 0, 0, 0, '', '', '', '', 0, 0, '" + data.Series + "', '" + data.TaxDate + "', '', '" + data.Address + "', 0, '', 0, '', 0, '', '', '', '', 0, '', '', " + data.PriceListNum + ", 0, '" + data.fecharegistro + "', '','')";
+            this.model.exeDB().then((data: any) => {
+                data.executeSql(sql, []).then((resp: any) => {
+                    let sqlx = "SELECT * FROM ordr ORDER BY id DESC LIMIT 1 ";
+                    this.model.exeDB().then((data: any) => {
+                        data.executeSql(sqlx, []).then((resp: any) => {
+                            resolve(resp.rows.item(0));
+                        }).catch((e: any) => {
+                            reject(e);
+                        });
+                    });
+                }).catch((e: any) => {
+                    reject(e);
+                });
+            })
+        })
+    }
+
+    public find(id: number) {
+        return new Promise((resolve, reject) => {
+            let sql = "SELECT * FROM ordr id = " + id;
+            this.model.exeDB().then((data: any) => {
+                data.executeSql(sql, []).then((data: any) => {
+                    resolve(data);
+                }).catch((e: any) => {
+                    reject(e);
+                });
+            })
         })
     }
 

@@ -3,7 +3,7 @@
         <ion-buttons slot="start">
             <ion-menu-button></ion-menu-button>
         </ion-buttons>
-        <ion-title>Documentos pedidos</ion-title>
+        <ion-title>Pedidos</ion-title>
         <ion-buttons slot="end">
             <ion-button (click)="pageSincronizar()">
                 <ion-icon name="sync"></ion-icon>
@@ -13,6 +13,9 @@
 </ion-header>
 <ion-content>
 
+
+    <ion-button color="primary" shape="round" fill="outline" (click)="pedidosarr(1)">PEDIDOS
+    </ion-button>
 
     <div class="ion-text-center" *ngIf="btnCrear == 0">
         <h5>No existe ningun documento de pedido</h5>

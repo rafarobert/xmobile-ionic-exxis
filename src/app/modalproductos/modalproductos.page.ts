@@ -1,8 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {NavParams, ModalController} from '@ionic/angular';
 import {NativeStorage} from '@ionic-native/native-storage/ngx';
-import {Dialogs} from '@ionic-native/dialogs/ngx';
 import {DetalleventaPage} from "../detalleventa/detalleventa.page";
+import {DetallesService} from "../modelos/detalles.service";
+import {Toast} from "@ionic-native/toast/ngx";
 
 @Component({
     selector: 'app-modalproductos',
@@ -13,9 +14,11 @@ export class ModalproductosPage implements OnInit {
     public items: any;
     public cantidad: number;
     public document: any;
+    public productoItem: any;
 
     constructor(public navParams: NavParams, public modalController: ModalController,
-                private nativeStorage: NativeStorage, private dialogs: Dialogs) {
+                private nativeStorage: NativeStorage, private toast: Toast,
+                private detallesService: DetallesService) {
         this.items = [];
         this.cantidad = 0;
         this.document = navParams.data;
@@ -35,8 +38,26 @@ export class ModalproductosPage implements OnInit {
     }
 
     public registrarDetalle(datos: any) {
-        console.log(this.document);
-        console.log(datos);
+        let f = new Date();
+        let productodata = {
+            ItemCode: this.productoItem.ItemCode,
+            Dscription: this.productoItem.ItemName,
+            Quantity: datos.cantidad,
+            Price: datos.presio,
+            Currency: datos.currency,
+            LineTotal: datos.total,
+            WhsCode: datos.almacenId,
+            GrossBase: 0,
+            idDocumento: this.document.id,
+            fechaAdd: f.getFullYear() + "-" + (f.getMonth() + 1) + "-" + f.getDate()
+        };
+        this.detallesService.insert(productodata).then((resp: any) => {
+            this.toast.show(`Resgistrado correctamente.`, '5000', 'center').subscribe(toast => {
+            });
+        }).catch((err: any) => {
+            this.toast.show(`Error al registrar.`, '5000', 'center').subscribe(toast => {
+            });
+        })
     }
 
     async detalleVenta(producto: any) {
@@ -48,13 +69,13 @@ export class ModalproductosPage implements OnInit {
         modalx.onDidDismiss().then((data: any) => {
             if (data.data != 1) {
                 this.registrarDetalle(data.data);
-                //this.cerrar();
             }
         });
         return await modalx.present();
     }
 
     public seleccionar(data: any) {
+        this.productoItem = data;
         this.detalleVenta(data);
     }
 
