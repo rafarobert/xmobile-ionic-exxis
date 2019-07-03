@@ -208,4 +208,8 @@ export class LoginPage implements OnInit {
             this.spinnerDialog.hide();
         })
     }
+
+    async gotoRegister(){       
+        this.navCrl.navigateRoot(`register`);
+      }
 }

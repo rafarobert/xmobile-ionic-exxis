@@ -222,5 +222,23 @@ export class DatarestService {
         })
     }
 
+    public getPersona(id: any) {
+        return new Promise((resolve, reject) => 
+        {
+            this.http.get("http://192.168.1.12:82/xmobilemiddleware/api/solicitudregistro/78912345",{},{}).then((result: any) => {
+            console.log(result);
+            resolve(JSON.parse(result.data));
+        }).catch((error: any) => {
+            reject(error);
+        });} )
+    }
+
+    public saveUsuario(data: any){
+        return new Promise((resolve,reject) => {
+            resolve("ok");
+            reject("error");
+        });
+    }
+
 
 }
