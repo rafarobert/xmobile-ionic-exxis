@@ -1,9 +1,68 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>register</ion-title>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content>
-
-</ion-content>
+    <ion-toolbar>
+      <ion-title>REGISTRO INICIAL</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  
+  <ion-content full>
+    <div id="loginback">
+        <ion-item>
+            <ion-label position="stacked">Nro. documento</ion-label>
+            <ion-input  [(ngModel)]="nrodocumento" type="text"></ion-input>
+            <ion-button (click)="getPersona()">Buscar</ion-button>
+        </ion-item>
+        <ion-item>
+            <ion-label position="stacked">Nombres</ion-label>
+            <ion-input  [(ngModel)]="personanombre" type="text"></ion-input>
+            <ion-input  [(ngModel)]="idpersona" type="text"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-item>
+            <ion-label position="stacked">Apellido paterno</ion-label>
+            <ion-input [(ngModel)]="personapaterno" type="text"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label position="stacked">Apellido materno</ion-label>
+            <ion-input [(ngModel)]="personamaterno" type="text"></ion-input>
+          </ion-item>
+        </ion-item>
+        <ion-item>
+            <ion-label position="stacked">Nick</ion-label>
+            <ion-input [(ngModel)]="userlogin" type="text"></ion-input>
+        </ion-item>
+        <ion-item>
+            <ion-label position="stacked">Hash</ion-label>
+            <ion-input [(ngModel)]="userhash" type="password"></ion-input>
+        </ion-item>
+        <ion-item>
+            <ion-label position="stacked">Contraseña</ion-label>
+            <ion-input [(ngModel)]="userpassword" type="password"></ion-input>
+        </ion-item>
+        <ion-item>
+            <ion-label position="stacked">Empresa</ion-label>
+            <ion-input [(ngModel)]="userjob" type="text"></ion-input>
+        </ion-item>
+        <ion-item>
+            <ion-label position="stacked">Plataforma del usuario</ion-label>
+            <ion-input [(ngModel)]="userplatform" type="text"></ion-input>
+        </ion-item>
+        <ion-item>
+            <ion-label position="stacked">Plataforma</ion-label>
+            <ion-input [(ngModel)]="userplatformplatform" type="text"></ion-input>
+        </ion-item>
+        <ion-item>
+            <ion-label position="stacked">Uuid</ion-label>
+            <ion-input [(ngModel)]="useruuid" type="text"></ion-input>
+        </ion-item>
+        <ion-item>
+            <ion-button (click)="gotoHome()">
+                <ion-icon slot="end" name="arrow-round-back"></ion-icon>
+                Volver
+            </ion-button>
+            <ion-button (click)="registrarUsuario()">
+                Registrar
+                <ion-icon slot="end" name="star"></ion-icon>
+            </ion-button>
+        </ion-item>
+    </div>
+  </ion-content>
