@@ -20,15 +20,20 @@
     </div>
 
     <ion-list>
-        <ion-item *ngFor="let item of ventasArr" (click)="detallePedidos()">
+        <ion-item *ngFor="let item of ventasArr" (click)="detallePedidos(item)">
             <ion-avatar slot="start">
                 <img src="../assets/goods.svg"/>
             </ion-avatar>
             <ion-label>
-                <p><b>NUM: {{item.id}}</b></p>
-                <p>Cliente: {{item.CardName}} </p>
-                <p>Creado: {{item.fecharegistro}}</p>
-                <p>Fecha enviado: {{item.fechasend}} </p>
+                <p> {{item.CardName}} </p>
+                <p *ngIf="item.estadosend != 0">
+                    <ion-icon color="success" style="font-size: 15px" name="done-all"></ion-icon>
+                    Enviado: {{item.fechasend}}
+                </p>
+                <p *ngIf="item.estadosend == 0">
+                    <ion-icon color="primary" style="font-size: 15px" name="done-all"></ion-icon>
+                    Creado: {{item.fecharegistro}}
+                </p>
             </ion-label>
         </ion-item>
     </ion-list>

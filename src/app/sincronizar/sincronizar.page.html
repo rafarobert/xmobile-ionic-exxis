@@ -17,6 +17,12 @@
             <ion-progress-bar type="indeterminate" reversed="true"></ion-progress-bar>
         </div>
 
+        <p *ngIf="!isenabled" class="ion-text-center" style="color:orangered">
+            Esto puede tardar varios minutos
+            <br/>
+            tenga paciencia por favor
+        </p>
+
 
         <ion-card-content>
             <ion-list>

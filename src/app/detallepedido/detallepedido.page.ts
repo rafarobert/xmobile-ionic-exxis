@@ -7,6 +7,7 @@ import {AuthenticationService} from "../services/authentication.service";
 import {DocumentoService} from "../modelos/documento.service";
 import {AlmacenService} from "../modelos/almacen.service";
 import {Toast} from "@ionic-native/toast/ngx";
+import {DetallesService} from "../modelos/detalles.service";
 
 @Component({
     selector: 'app-detallepedido',
@@ -28,9 +29,10 @@ export class DetallepedidoPage implements OnInit {
     public RowNum: string;
     public AddressName: string;
     public Street: string;
+    public sumaTotal: number;
 
     constructor(private activatedRoute: ActivatedRoute, private almacenService: AlmacenService,
-                public actionSheetController: ActionSheetController, private toast: Toast,
+                public actionSheetController: ActionSheetController, private toast: Toast, private detallesService: DetallesService,
                 private navCrl: NavController, private authenticationService: AuthenticationService,
                 public modalController: ModalController, private modelDocument: DocumentoService) {
         this.productos = [];
@@ -43,16 +45,45 @@ export class DetallepedidoPage implements OnInit {
         this.RowNum = '';
         this.AddressName = ''
         this.Street = '';
+        this.sumaTotal = 0;
     }
 
     ngOnInit() {
         this.tipo = this.activatedRoute.snapshot.paramMap.get('id');
-        console.log(this.tipo);
         if (this.tipo == 'null' || this.tipo == null) {
             this.getAlmacen();
         } else {
-            console.log("Detalle de pedido para edicion");
+            console.log(this.tipo);
+            this.getCliente();
         }
+    }
+
+
+    public getCliente() {
+        let id = parseInt(this.tipo);
+        this.modelDocument.find(id)
+            .then((data: any) => {
+                let dt = data.rows.item(0);
+                console.log(dt);
+                this.CardName = dt.CardName;
+                this.Address = dt.Address;
+                this.registrado = dt.fecharegistro;
+                this.listaproductos(dt.id);
+            }).catch((e: any) => {
+            console.log(e);
+        })
+    }
+
+    public listaproductos(id: any) {
+        this.productos = [];
+        this.detallesService.findWhere(id).then((resp: any) => {
+            for (let i = 0; i < resp.rows.length; i++) {
+                let y = resp.rows.item(i);
+                this.productos.push(y);
+                this.sumaTotal += (y.Price * y.Quantity);
+            }
+        }).catch((err: any) => {
+        })
     }
 
     async almacenes() {
@@ -62,7 +93,6 @@ export class DetallepedidoPage implements OnInit {
         });
         await actionSheetx.present();
     }
-
 
     public getAlmacen() {
         this.authenticationService.getUser().then((data: any) => {
@@ -217,17 +247,10 @@ export class DetallepedidoPage implements OnInit {
 
 
     public actionCliente() {
-        if (this.tipo != 0) {
+        if (this.tipo == 'null') {
             this.presentModal();
-        } else {
-            alert("Detalle cliente");
         }
     }
-
-
-
-
-
 
     async agregarProductos() {
         this.document.id = this.documentData.id;
@@ -238,7 +261,6 @@ export class DetallepedidoPage implements OnInit {
             componentProps: doc
         });
         modal.onDidDismiss().then((data: any) => {
-            console.log("LIsta datos del documento");
             if (data != undefined) {
                 console.log(data);
             }

@@ -5,9 +5,11 @@ import {ModelService} from './model.service';
     providedIn: 'root'
 })
 export class DocumentoService {
+    public contador: number;
 
     constructor(private model: ModelService) {
         this.createTable();
+        this.contador = 0;
     }
 
     public createTable() {
@@ -98,7 +100,7 @@ export class DocumentoService {
 
     public find(id: number) {
         return new Promise((resolve, reject) => {
-            let sql = "SELECT * FROM ordr id = " + id;
+            let sql = "SELECT * FROM ordr WHERE id = " + id;
             this.model.exeDB().then((data: any) => {
                 data.executeSql(sql, []).then((data: any) => {
                     resolve(data);
@@ -121,6 +123,43 @@ export class DocumentoService {
                 });
             })
         })
+    }
+
+
+    public findAllEnvio() {
+        return new Promise((resolve, reject) => {
+            let sql = "SELECT * FROM ordr WHERE estadosend = 0";
+            this.model.exeDB().then((data: any) => {
+                data.executeSql(sql, []).then((data: any) => {
+                    resolve(data);
+                }).catch((e: any) => {
+                    reject(e);
+                });
+            })
+        })
+    }
+
+
+    public updateEstado(x: any) {
+        return new Promise((resolve, reject) => {
+            let sql = "UPDATE ordr SET estadosend = " + x.idPedidoServicio + " WHERE id = " + x.idPedidoUsr;
+            this.model.exeDB().then((data: any) => {
+                data.executeSql(sql, []).then((data: any) => {
+                    resolve(data);
+                }).catch((e: any) => {
+                    reject(e);
+                });
+            })
+        })
+    }
+
+    async updateDocuments(arr: any) {
+        if (this.contador < arr.length) {
+            await this.updateEstado(arr[this.contador]);
+            this.contador++;
+            this.updateDocuments(arr);
+        } else {
+        }
     }
 
 }

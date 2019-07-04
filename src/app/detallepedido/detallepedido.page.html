@@ -3,13 +3,13 @@
         <ion-buttons slot="start">
             <ion-back-button></ion-back-button>
         </ion-buttons>
-        <ion-title *ngIf="tipo != null"> Crear pedido</ion-title>
-        <ion-title *ngIf="tipo == null"> Detalle pedido</ion-title>
+        <ion-title *ngIf="tipo != 'null'"> Detalle pedido</ion-title>
+        <ion-title *ngIf="tipo == 'null'"> Crear pedido</ion-title>
     </ion-toolbar>
 </ion-header>
 <ion-content>
     <br/>
-    <div class="ion-text-center">
+    <div class="ion-text-center" *ngIf="tipo == 'null'">
         <ion-button *ngIf="CardName == ''" color="primary" shape="round" (click)="actionCliente()">
             Seleccionar cliente
         </ion-button>
@@ -26,7 +26,7 @@
         </ion-card-content>
     </ion-card>
 
-    <div class="ion-text-center">
+    <div class="ion-text-center" *ngIf="tipo == 'null'">
         <ion-button color="warning" *ngIf="CardName != ''" shape="round"
                     (click)="agregarProductos()">
             Agregar producto
@@ -34,14 +34,13 @@
     </div>
 
     <ion-list>
-        <ion-item *ngFor="let item of productos" (click)="detalleProducto()">
+        <ion-item *ngFor="let item of productos">
             <ion-avatar slot="start">
                 <img src="../assets/product.svg"/>
             </ion-avatar>
             <ion-label>
-                <p><b>{{item.ItemName}}</b></p>
-                <p>{{item.SalesUnit}} </p>
-                <p><b>Cantidad : </b>{{item.cantidad}} </p>
+                <p><b>{{item.Dscription}}</b></p>
+                <p><b>Precio : </b>{{item.Price}} <b>Cantidad : </b>{{item.Quantity}} </p>
             </ion-label>
         </ion-item>
     </ion-list>
@@ -57,7 +56,7 @@
                 </ion-button>
             </ion-col>
             <ion-col size="4">
-                <p class="ion-text-center"><b>Total: 400</b></p>
+                <p class="ion-text-center"><b>Total: {{sumaTotal}}</b></p>
             </ion-col>
         </ion-row>
     </ion-grid>

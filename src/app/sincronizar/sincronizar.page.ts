@@ -8,6 +8,7 @@ import {AuthenticationService} from "../services/authentication.service";
 import {SpinnerDialog} from "@ionic-native/spinner-dialog/ngx";
 import {DetallesService} from "../modelos/detalles.service";
 import {DocumentoService} from "../modelos/documento.service";
+import {Insomnia} from '@ionic-native/insomnia/ngx';
 
 @Component({
     selector: 'app-sincronizar',
@@ -36,9 +37,11 @@ export class SincronizarPage implements OnInit {
     public etiquetas: any;
     public i: number;
     public documentEnvio: any;
+    public documentEnvioxxxx: any;
+    public totalenvio: number;
     public load: boolean;
 
-    constructor(private data: DatarestService, private uid: Uid, private documentoService: DocumentoService,
+    constructor(private insomnia: Insomnia, private data: DatarestService, private uid: Uid, private documentoService: DocumentoService,
                 private toast: Toast, private navCrl: NavController, private detallesService: DetallesService, private spinnerDialog: SpinnerDialog,
                 public  localidadService: LocalidadService, private authenticationService: AuthenticationService) {
         this.estados = [];
@@ -62,7 +65,9 @@ export class SincronizarPage implements OnInit {
         this.isenabled = true;
         this.etiquetas = [];
         this.i = 0;
+        this.totalenvio = 0;
         this.documentEnvio = [];
+        this.documentEnvioxxxx = [];
     }
 
     async ngLabels() {
@@ -71,6 +76,18 @@ export class SincronizarPage implements OnInit {
 
     ngOnInit() {
         this.ngLabels();
+    }
+
+    public despierto() {
+        this.insomnia.keepAwake().then(() => {
+        }, () => {
+        });
+    }
+
+    public dormir() {
+        this.insomnia.allowSleepAgain().then(() => {
+        }, () => {
+        });
     }
 
     public datatoggel() {
@@ -200,7 +217,7 @@ export class SincronizarPage implements OnInit {
 
     public iniasing() {
         if (this.contador < this.aux.length) {
-            //this.spinnerDialog.show(null, null, true);
+            this.despierto();
             let name = this.aux[this.contador].name;
             switch (name) {
                 case "productos":
@@ -228,6 +245,7 @@ export class SincronizarPage implements OnInit {
                 setTimeout(() => {
                     this.navCrl.pop();
                     this.isenabled = true;
+                    this.dormir();
                 }, 100)
             });
         }
@@ -235,7 +253,7 @@ export class SincronizarPage implements OnInit {
 
     public header() {
         return new Promise((resolve, reject) => {
-            this.documentoService.findAll().then((data: any) => {
+            this.documentoService.findAllEnvio().then((data: any) => {
                 resolve(data);
             }).catch((err: any) => {
                 reject(err);
@@ -243,25 +261,26 @@ export class SincronizarPage implements OnInit {
         })
     }
 
-    async pedidosarr(x: number) {
+    async pedidosarr(x = 1) {
         if (x == 1) {
+            this.documentEnvioxxxx = [];
             this.documentEnvio = [];
             this.i = 0;
             this.load = true;
-            //this.spinnerDialog.show(null, null, true);
             this.toast.show(`Exportando datos !!Espere POR FAVOR`, '3000', 'top').subscribe(toast => {
             });
+            this.isenabled = false;
+            this.despierto();
+            this.documentEnvioxxxx = await this.header();
+            this.totalenvio = this.documentEnvioxxxx.rows.length;
         }
-        let h: any;
-        h = await this.header();
-        let header = h.rows.item(this.i);
-        this.detallesService.findWhere(header.id).then((respx: any) => {
-            let u = [];
-            for (let i = 0; i < respx.rows.length; i++) {
-                u.push(respx.rows.item(i));
-            }
-            if (this.i < (h.rows.length - 1)) {
-                this.i++;
+        if (this.i < this.totalenvio) {
+            let header = this.documentEnvioxxxx.rows.item(this.i);
+            this.detallesService.findWhere(header.id).then((respx: any) => {
+                let u = [];
+                for (let i = 0; i < respx.rows.length; i++) {
+                    u.push(respx.rows.item(i));
+                }
                 this.authenticationService.getUser().then((resp: any) => {
                     let documentosarr = {
                         usuariodataid: resp.respuesta.idUsuario,
@@ -270,27 +289,41 @@ export class SincronizarPage implements OnInit {
                         detalles: u
                     };
                     this.documentEnvio.push(documentosarr);
+                    this.i++;
                     this.pedidosarr(0);
                 }).catch((err: any) => {
                     console.log(err);
                 })
-            } else {
-                let r = this.documentEnvio;
-                this.data.pedidosAdd(r).then((r: any) => {
+            }).catch((err: any) => {
+                this.load = false;
+                this.dormir();
+            })
+        } else {
+            if (this.totalenvio != 0) {
+                this.data.pedidosAdd(this.documentEnvio).then((respuesta: any) => {
+                    this.toast.show(respuesta.mensaje, '5000', 'top').subscribe(toast => {
+                    });
                     this.load = false;
-                    this.spinnerDialog.hide();
+                    this.isenabled = true;
+                    this.dormir();
                     this.sincronizar();
+                    this.documentoService.updateDocuments(respuesta.respuesta);
                 }).catch((e: any) => {
                     this.load = false;
-                    this.spinnerDialog.hide();
+                    this.toast.show(`!ERROR El tiempo de espera a superado inténtalo nuevamente:`, '5000', 'top').subscribe(toast => {
+                    });
+                    this.dormir();
+                    this.isenabled = true;
+                    this.navCrl.pop();
                 })
+            } else {
+                this.load = false;
+                this.isenabled = true;
+                this.dormir();
+                this.sincronizar();
             }
-        }).catch((err: any) => {
-            this.load = false;
-            this.spinnerDialog.hide();
-        })
+        }
     }
-
 
     public sincronizar() {
         this.isenabled = false;

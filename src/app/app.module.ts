@@ -22,6 +22,7 @@ import {ModalproductosPageModule} from './modalproductos/modalproductos.module';
 import {DetalleventaPageModule} from "./detalleventa/detalleventa.module"
 import {Dialogs} from '@ionic-native/dialogs/ngx';
 import {ActionSheet} from '@ionic-native/action-sheet/ngx';
+import {Insomnia} from '@ionic-native/insomnia/ngx';
 
 @NgModule({
     declarations: [AppComponent],
@@ -50,6 +51,7 @@ import {ActionSheet} from '@ionic-native/action-sheet/ngx';
         NativeStorage,
         Dialogs,
         ActionSheet,
+        Insomnia,
         {provide: RouteReuseStrategy, useClass: IonicRouteStrategy}
     ],
     bootstrap: [AppComponent]

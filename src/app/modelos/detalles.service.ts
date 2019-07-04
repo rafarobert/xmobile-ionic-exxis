@@ -65,7 +65,7 @@ export class DetallesService {
 
     public findWhere(id: any) {
         return new Promise((resolve, reject) => {
-            let sql = "SELECT * FROM rdr1 WHERE idDocumento = " + id;
+            let sql = "SELECT * FROM rdr1 WHERE idDocumento = " + id +" ORDER BY id DESC";
             this.model.exeDB().then((data: any) => {
                 data.executeSql(sql, []).then((resp: any) => {
                     resolve(resp);

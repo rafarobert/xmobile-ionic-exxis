@@ -34,6 +34,7 @@ export class PedidosPage implements OnInit {
         this.documentoService.findAll().then((data: any) => {
             this.btnCrear = data.rows.length;
             for (let i = 0; i < data.rows.length; i++) {
+                console.log(data.rows.item(i));
                 this.ventasArr.push(data.rows.item(i));
             }
         }).catch((err: any) => {
@@ -45,9 +46,13 @@ export class PedidosPage implements OnInit {
         this.navCrl.navigateForward(`sincronizar`);
     }
 
+    public fixedEncodeURIComponent(str) {
+        return encodeURIComponent(str).replace(/[!'()]/g, '%2A').replace(/\*/g, "%2A");
+    }
 
-    public detallePedidos() {
-        this.navCrl.navigateForward(`detallepedido/0`);
+    public detallePedidos(item: any) {
+        let itemid = item.id;
+        this.navCrl.navigateForward(`detallepedido/` + itemid);
     }
 
     public crearPedido() {
@@ -55,3 +60,10 @@ export class PedidosPage implements OnInit {
     }
 
 }
+
+
+/* console.log(item);
+ let tesp = this.fixedEncodeURIComponent(JSON.stringify(item));
+ console.log(tesp);
+ //let tesp = encodeURIComponent(item);
+ //console.log(tesp); */
