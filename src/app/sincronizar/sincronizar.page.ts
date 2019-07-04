@@ -4,6 +4,10 @@ import {Uid} from '@ionic-native/uid/ngx';
 import {NavController} from '@ionic/angular';
 import {Toast} from '@ionic-native/toast/ngx';
 import {LocalidadService} from "../modelos/localidad.service";
+import {AuthenticationService} from "../services/authentication.service";
+import {SpinnerDialog} from "@ionic-native/spinner-dialog/ngx";
+import {DetallesService} from "../modelos/detalles.service";
+import {DocumentoService} from "../modelos/documento.service";
 
 @Component({
     selector: 'app-sincronizar',
@@ -30,11 +34,15 @@ export class SincronizarPage implements OnInit {
     public loadlistunidades: boolean;
     public isenabled: boolean;
     public etiquetas: any;
+    public i: number;
+    public documentEnvio: any;
+    public load: boolean;
 
-    constructor(private data: DatarestService, private uid: Uid,
-                private toast: Toast, private navCrl: NavController,
-                public  localidadService: LocalidadService) {
+    constructor(private data: DatarestService, private uid: Uid, private documentoService: DocumentoService,
+                private toast: Toast, private navCrl: NavController, private detallesService: DetallesService, private spinnerDialog: SpinnerDialog,
+                public  localidadService: LocalidadService, private authenticationService: AuthenticationService) {
         this.estados = [];
+        this.load = false;
         this.aux = [];
         this.todos = false;
         this.clientes = false;
@@ -53,6 +61,8 @@ export class SincronizarPage implements OnInit {
         this.loadlistunidades = false;
         this.isenabled = true;
         this.etiquetas = [];
+        this.i = 0;
+        this.documentEnvio = [];
     }
 
     async ngLabels() {
@@ -188,9 +198,9 @@ export class SincronizarPage implements OnInit {
         })
     }
 
-
     public iniasing() {
         if (this.contador < this.aux.length) {
+            //this.spinnerDialog.show(null, null, true);
             let name = this.aux[this.contador].name;
             switch (name) {
                 case "productos":
@@ -213,18 +223,78 @@ export class SincronizarPage implements OnInit {
                     break;
             }
         } else {
+            this.spinnerDialog.hide();
             this.toast.show(`Finalizo la sincronización`, '6000', 'top').subscribe(toast => {
                 setTimeout(() => {
                     this.navCrl.pop();
                     this.isenabled = true;
-                }, 500)
+                }, 100)
             });
         }
     }
 
+    public header() {
+        return new Promise((resolve, reject) => {
+            this.documentoService.findAll().then((data: any) => {
+                resolve(data);
+            }).catch((err: any) => {
+                reject(err);
+            })
+        })
+    }
+
+    async pedidosarr(x: number) {
+        if (x == 1) {
+            this.documentEnvio = [];
+            this.i = 0;
+            this.load = true;
+            //this.spinnerDialog.show(null, null, true);
+            this.toast.show(`Exportando datos !!Espere POR FAVOR`, '3000', 'top').subscribe(toast => {
+            });
+        }
+        let h: any;
+        h = await this.header();
+        let header = h.rows.item(this.i);
+        this.detallesService.findWhere(header.id).then((respx: any) => {
+            let u = [];
+            for (let i = 0; i < respx.rows.length; i++) {
+                u.push(respx.rows.item(i));
+            }
+            if (this.i < (h.rows.length - 1)) {
+                this.i++;
+                this.authenticationService.getUser().then((resp: any) => {
+                    let documentosarr = {
+                        usuariodataid: resp.respuesta.idUsuario,
+                        catidadDetalle: respx.rows.length,
+                        header: header,
+                        detalles: u
+                    };
+                    this.documentEnvio.push(documentosarr);
+                    this.pedidosarr(0);
+                }).catch((err: any) => {
+                    console.log(err);
+                })
+            } else {
+                let r = this.documentEnvio;
+                this.data.pedidosAdd(r).then((r: any) => {
+                    this.load = false;
+                    this.spinnerDialog.hide();
+                    this.sincronizar();
+                }).catch((e: any) => {
+                    this.load = false;
+                    this.spinnerDialog.hide();
+                })
+            }
+        }).catch((err: any) => {
+            this.load = false;
+            this.spinnerDialog.hide();
+        })
+    }
+
+
     public sincronizar() {
         this.isenabled = false;
-        this.toast.show(`Iniciando sincronización !!Espere por favor`, '5000', 'top').subscribe(toast => {
+        this.toast.show(`Importando datos !!Espere por favor`, '5000', 'top').subscribe(toast => {
         });
         this.contador = 0;
         this.aux = [];

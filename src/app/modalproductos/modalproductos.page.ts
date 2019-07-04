@@ -15,6 +15,8 @@ export class ModalproductosPage implements OnInit {
     public cantidad: number;
     public document: any;
     public productoItem: any;
+    public addCard: boolean;
+    public animateAdd: string;
 
     constructor(public navParams: NavParams, public modalController: ModalController,
                 private nativeStorage: NativeStorage, private toast: Toast,
@@ -22,6 +24,8 @@ export class ModalproductosPage implements OnInit {
         this.items = [];
         this.cantidad = 0;
         this.document = navParams.data;
+        this.addCard = false;
+        this.animateAdd = '';
     }
 
     ngOnInit() {
@@ -37,6 +41,7 @@ export class ModalproductosPage implements OnInit {
         this.modalController.dismiss();
     }
 
+
     public registrarDetalle(datos: any) {
         let f = new Date();
         let productodata = {
@@ -49,10 +54,14 @@ export class ModalproductosPage implements OnInit {
             WhsCode: datos.almacenId,
             GrossBase: 0,
             idDocumento: this.document.id,
+            idDefault: this.document.idDefault,
+            unidadID: datos.unidad,
             fechaAdd: f.getFullYear() + "-" + (f.getMonth() + 1) + "-" + f.getDate()
         };
         this.detallesService.insert(productodata).then((resp: any) => {
-            this.toast.show(`Resgistrado correctamente.`, '5000', 'center').subscribe(toast => {
+            this.addCard = true;
+            this.animateAdd = 'animated flip';
+            this.toast.show(`Resgistrado correctamente.`, '5000', 'bottom').subscribe(toast => {
             });
         }).catch((err: any) => {
             this.toast.show(`Error al registrar.`, '5000', 'center').subscribe(toast => {
@@ -68,6 +77,8 @@ export class ModalproductosPage implements OnInit {
         });
         modalx.onDidDismiss().then((data: any) => {
             if (data.data != 1) {
+                this.addCard = false;
+                this.animateAdd = '';
                 this.registrarDetalle(data.data);
             }
         });

@@ -28,6 +28,7 @@ export class DetalleventaPage implements OnInit {
     public currency: any;
     public unidadText: any;
     public productoName: any;
+    public almacenIddefaul: any;
 
     constructor(public navParams: NavParams,
                 private almacenService: AlmacenService,
@@ -49,8 +50,10 @@ export class DetalleventaPage implements OnInit {
         this.almacenesArr = [];
         this.almacenName = '';
         this.almacenId = '';
+        this.almacenIddefaul = '';
         this.unidadText = '';
         this.productoName = 'Detalles.';
+
     }
 
     public getPrecioproducto() {
@@ -110,6 +113,9 @@ export class DetalleventaPage implements OnInit {
     }
 
     ngOnInit() {
+        console.log(this.dataproductos);
+        console.log(this.dataproductos.documentos.idDefault);
+        this.almacenIddefaul = this.dataproductos.documentos.idDefault;
         this.comprometido = this.dataproductos.QuantityOrderedFromVendors;
         this.disponible = this.dataproductos.QuantityOnStock;
         this.productoName = this.dataproductos.documentos.CardName;
@@ -119,15 +125,49 @@ export class DetalleventaPage implements OnInit {
     }
 
 
-    public getAlmacen() {
+    public getAlmacen(n = 1) {
         this.authenticationService.getUser().then((data: any) => {
             let codAlma = data.config[0].almacenes;
-            this.almacenService.findAll().then((dataz: any) => {
-                if (codAlma != '') {
-                    let arr = codAlma.split(',');
-                    for (let x of arr) {
+            if (n == 1) {
+                this.almacenService.findAll().then((dataz: any) => {
+                    for (let almacex of dataz) {
+                        if (almacex.WarehouseCode == this.almacenIddefaul) {
+                            this.almacenName = almacex.WarehouseName;
+                            this.almacenId = almacex.WarehouseCode;
+                            this.almacenesArr.push({
+                                text: almacex.WarehouseName,
+                                handler: () => {
+                                    this.almacenName = almacex.WarehouseName;
+                                    this.almacenId = almacex.WarehouseCode;
+                                }
+                            })
+                        }
+                    }
+                    this.getAlmacen(2);
+                }).catch((err: any) => {
+                    this.toast.show(`La base de datos de almacens no existe. `, '3000', 'top').subscribe(toast => {
+                    });
+                })
+            } else {
+                this.almacenService.findAll().then((dataz: any) => {
+                    if (codAlma != '') {
+                        let arr = codAlma.split(',');
+                        for (let x of arr) {
+                            for (let almacex of dataz) {
+                                if (almacex.WarehouseCode == x && almacex.WarehouseCode != this.almacenIddefaul) {
+                                    this.almacenesArr.push({
+                                        text: almacex.WarehouseName,
+                                        handler: () => {
+                                            this.almacenName = almacex.WarehouseName;
+                                            this.almacenId = almacex.WarehouseCode;
+                                        }
+                                    })
+                                }
+                            }
+                        }
+                    } else {
                         for (let almacex of dataz) {
-                            if (almacex.WarehouseCode == x) {
+                            if (almacex.WarehouseCode != this.almacenIddefaul) {
                                 this.almacenesArr.push({
                                     text: almacex.WarehouseName,
                                     handler: () => {
@@ -138,21 +178,11 @@ export class DetalleventaPage implements OnInit {
                             }
                         }
                     }
-                } else {
-                    for (let almacex of dataz) {
-                        this.almacenesArr.push({
-                            text: almacex.WarehouseName,
-                            handler: () => {
-                                this.almacenName = almacex.WarehouseName;
-                                this.almacenId = almacex.WarehouseCode;
-                            }
-                        })
-                    }
-                }
-            }).catch((err: any) => {
-                this.toast.show(`La base de datos de almacens no existe. `, '3000', 'top').subscribe(toast => {
-                });
-            })
+                }).catch((err: any) => {
+                    this.toast.show(`La base de datos de almacens no existe. `, '3000', 'top').subscribe(toast => {
+                    });
+                })
+            }
         }).catch((error) => {
             this.toast.show(`El vendedor no existe. `, '3000', 'top').subscribe(toast => {
             });

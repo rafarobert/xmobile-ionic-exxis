@@ -57,7 +57,8 @@ export class DocumentoService {
       estadosend integer DEFAULT 1,\n\
       fecharegistro varchar(12),\n\
       fechaupdate varchar(12),\n\
-      fechasend varchar(12)\n\
+      fechasend varchar(12),\n\
+      rowNum varchar(12)\n\
     )';
         this.model.exeDB().then((data: any) => {
             data.executeSql(sql, []).then(() => {
@@ -71,14 +72,19 @@ export class DocumentoService {
 
     public insert(data: any) {
         return new Promise((resolve, reject) => {
-            let sql = "INSERT INTO ordr(id, DocEntry, DocNum, DocType, canceled, Printed, DocStatus, DocDate, DocDueDate, CardCode, CardName, NumAtCard, DiscPrcnt, DiscSum, DocCur, DocRate, DocTotal, PaidToDate, Ref1, Ref2, Comments, JrnlMemo, GroupNum, SlpCode, Series, TaxDate, LicTradNum,Address, UserSign, CreateDate, UserSign2,UpdateDate, U_4MOTIVOCANCELADO, U_4NIT, U_4RAZON_SOCIAL, U_LATITUD, U_LONGITUD, U_4SUBTOTAL, U_4DOCUMENTOORIGEN, U_4MIGRADOCONCEPTO, U_4MIGRADO, estadosend, fecharegistro, fechaupdate,fechasend)" +
-                "VALUES(NULL, 0, 0, '', '', '', '', '" + data.DocDate + "', '" + data.DocDueDate + "', '" + data.CardCode + "', '" + data.CardName + "', '', 0, 0, '', 0, 0, 0, '', '', '', '', 0, 0, '" + data.Series + "', '" + data.TaxDate + "', '', '" + data.Address + "', 0, '', 0, '', 0, '', '', '', '', 0, '', '', " + data.PriceListNum + ", 0, '" + data.fecharegistro + "', '','')";
+            let sql = "INSERT INTO ordr(id, DocEntry, DocNum, DocType, canceled, Printed, DocStatus, DocDate, DocDueDate, CardCode, CardName, NumAtCard, DiscPrcnt, DiscSum, DocCur, DocRate, DocTotal, PaidToDate, Ref1, Ref2, Comments, JrnlMemo, GroupNum, SlpCode, Series, TaxDate, LicTradNum,Address, UserSign, CreateDate, UserSign2,UpdateDate, U_4MOTIVOCANCELADO, U_4NIT, U_4RAZON_SOCIAL, U_LATITUD, U_LONGITUD, U_4SUBTOTAL, U_4DOCUMENTOORIGEN, U_4MIGRADOCONCEPTO, U_4MIGRADO, estadosend, fecharegistro, fechaupdate,fechasend, rowNum)" +
+                "VALUES(NULL, 0, 0, '" + data.DocType + "', '', '', '', '" + data.DocDate + "', '" + data.DocDueDate + "', '" + data.CardCode + "', '" + data.CardName + "', '', 0, 0, '', 0, 0, 0, '', '', '', '', 0, 0, '" + data.Series + "', '" + data.TaxDate + "', '', '" + data.Address + "', 0, '', 0, '', 0, '', '', '', '', 0, '', '', " + data.PriceListNum + ", 0, '" + data.fecharegistro + "', '','','" + data.rowNum + "')";
             this.model.exeDB().then((data: any) => {
                 data.executeSql(sql, []).then((resp: any) => {
                     let sqlx = "SELECT * FROM ordr ORDER BY id DESC LIMIT 1 ";
                     this.model.exeDB().then((data: any) => {
                         data.executeSql(sqlx, []).then((resp: any) => {
-                            resolve(resp.rows.item(0));
+                            let ux = resp.rows.item(0);
+                            let sqlu = "UPDATE ordr SET DocNum = " + ux.id + " WHERE id = " + ux.id;
+                            this.model.exeDB().then((data: any) => {
+                                data.executeSql(sqlu, []);
+                            })
+                            resolve(ux);
                         }).catch((e: any) => {
                             reject(e);
                         });

@@ -2,7 +2,7 @@
 <widget id="io.exxis.xmobile" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Xmobile v2</name>
     <description>Exxis App</description>
-    <author email="hi@ionicframework.com" href="http://ionicframework.com/">Ionic Framework Team</author>
+    <author email="mickyhermozo72@gmail.com" href="http://www.exxis-group.com/">Exxis-Bolivia</author>
     <content src="index.html" />
     <access origin="*" />
     <allow-intent href="http://*/*" />

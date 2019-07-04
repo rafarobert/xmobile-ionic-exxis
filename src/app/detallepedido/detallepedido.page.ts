@@ -5,6 +5,8 @@ import {ModalclientePage} from '../modalcliente/modalcliente.page';
 import {ModalproductosPage} from '../modalproductos/modalproductos.page';
 import {AuthenticationService} from "../services/authentication.service";
 import {DocumentoService} from "../modelos/documento.service";
+import {AlmacenService} from "../modelos/almacen.service";
+import {Toast} from "@ionic-native/toast/ngx";
 
 @Component({
     selector: 'app-detallepedido',
@@ -20,21 +22,89 @@ export class DetallepedidoPage implements OnInit {
     public registrado: any;
     public document: any;
     public documentData: any;
+    public almacenesArr: any;
+    public almacenName: string;
+    public almacenId: string;
+    public RowNum: string;
+    public AddressName: string;
+    public Street: string;
 
-    constructor(private activatedRoute: ActivatedRoute,
-                public actionSheetController: ActionSheetController,
+    constructor(private activatedRoute: ActivatedRoute, private almacenService: AlmacenService,
+                public actionSheetController: ActionSheetController, private toast: Toast,
                 private navCrl: NavController, private authenticationService: AuthenticationService,
                 public modalController: ModalController, private modelDocument: DocumentoService) {
         this.productos = [];
         this.header = [];
         this.registrado = "";
         this.CardName = "";
+        this.almacenesArr = [];
+        this.almacenName = '';
+        this.almacenId = '';
+        this.RowNum = '';
+        this.AddressName = ''
+        this.Street = '';
     }
 
     ngOnInit() {
         this.tipo = this.activatedRoute.snapshot.paramMap.get('id');
         console.log(this.tipo);
+        if (this.tipo == 'null' || this.tipo == null) {
+            this.getAlmacen();
+        } else {
+            console.log("Detalle de pedido para edicion");
+        }
     }
+
+    async almacenes() {
+        const actionSheetx = await this.actionSheetController.create({
+            header: 'SELECCIONAR ALMACEN',
+            buttons: this.almacenesArr
+        });
+        await actionSheetx.present();
+    }
+
+
+    public getAlmacen() {
+        this.authenticationService.getUser().then((data: any) => {
+            let codAlma = data.config[0].almacenes;
+            this.almacenService.findAll().then((dataz: any) => {
+                if (codAlma != '') {
+                    let arr = codAlma.split(',');
+                    for (let x of arr) {
+                        for (let almacex of dataz) {
+                            if (almacex.WarehouseCode == x) {
+                                this.almacenesArr.push({
+                                    text: almacex.WarehouseName,
+                                    handler: () => {
+                                        this.almacenName = almacex.WarehouseName;
+                                        this.almacenId = almacex.WarehouseCode;
+                                    }
+                                })
+                            }
+                        }
+                    }
+                } else {
+                    for (let almacex of dataz) {
+                        this.almacenesArr.push({
+                            text: almacex.WarehouseName,
+                            handler: () => {
+                                this.almacenName = almacex.WarehouseName;
+                                this.almacenId = almacex.WarehouseCode;
+                            }
+                        })
+                    }
+                }
+                this.almacenes();
+            }).catch((err: any) => {
+                this.toast.show(`La base de datos de almacens no existe. `, '3000', 'top').subscribe(toast => {
+                });
+            })
+        }).catch((error) => {
+            this.toast.show(`El vendedor no existe. `, '3000', 'top').subscribe(toast => {
+            });
+        });
+    }
+
 
     ngOnDestroy() {
         console.log(this.header);
@@ -48,6 +118,10 @@ export class DetallepedidoPage implements OnInit {
                 text: dirccion.AddressName,
                 icon: 'locate',
                 handler: () => {
+                    this.RowNum = dirccion.RowNum;
+                    this.AddressName = dirccion.AddressName
+                    this.Street = dirccion.Street;
+                    data.rowNum = dirccion.RowNum;
                     this.createDocument(data, dirccion);
                 }
             });
@@ -65,6 +139,7 @@ export class DetallepedidoPage implements OnInit {
                 this.document = {
                     CardCode: data.data.CardCode,
                     CardName: data.data.CardName,
+                    DocType: 'DOP',
                     PriceListNum: data.data.PriceListNum,
                     DocCur: data.data.Currency,
                     Address: data.data.Address,
@@ -80,11 +155,13 @@ export class DetallepedidoPage implements OnInit {
                     fecharegistro: this.registrado,
                     fechaupdate: this.registrado,
                     fechasend: this.registrado,
+                    rowNum: data.rowNum
                 }
             } else {
                 this.document = {
                     CardCode: data.data.CardCode,
                     CardName: data.data.CardName,
+                    DocType: 'DOP',
                     PriceListNum: data.data.PriceListNum,
                     DocCur: data.data.Currency,
                     Address: data.data.Address,
@@ -100,15 +177,14 @@ export class DetallepedidoPage implements OnInit {
                     fecharegistro: this.registrado,
                     fechaupdate: this.registrado,
                     fechasend: this.registrado,
+                    rowNum: data.rowNum
                 }
             }
-            this.modelDocument.insert(this.document)
-                .then((dx: any) => {
-                    this.documentData = dx;
-                })
-                .catch((err: any) => {
-                    console.log(err);
-                });
+            this.modelDocument.insert(this.document).then((dx: any) => {
+                this.documentData = dx;
+            }).catch((err: any) => {
+                console.log(err);
+            });
         }).catch((err: any) => {
             console.log(err);
         })
@@ -121,7 +197,6 @@ export class DetallepedidoPage implements OnInit {
         } else {
             this.createDocument(data);
         }
-
     }
 
     async presentModal() {
@@ -150,14 +225,20 @@ export class DetallepedidoPage implements OnInit {
     }
 
 
+
+
+
+
     async agregarProductos() {
         this.document.id = this.documentData.id;
+        this.document.idDefault = this.almacenId;
         let doc = this.document;
         const modal = await this.modalController.create({
             component: ModalproductosPage,
             componentProps: doc
         });
         modal.onDidDismiss().then((data: any) => {
+            console.log("LIsta datos del documento");
             if (data != undefined) {
                 console.log(data);
             }

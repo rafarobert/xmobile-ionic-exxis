@@ -53,6 +53,22 @@ export class DatarestService {
         })
     }
 
+    public pedidosAdd(term: any) {
+        return new Promise((resolve, reject) => {
+            this.nativeStorage.getItem('IP').then((url: any) => {
+                this.storage.get(TOKEN_KEY).then(resp => {
+                    this.http.setDataSerializer('json');
+                    this.http.post(url + "api/pedido?access-token=" + resp.token, term, {})
+                        .then((data: any) => {
+                            let json = JSON.parse(data.data);
+                            resolve(json);
+                        }).catch((err: any) => {
+                        reject(err);
+                    })
+                })
+            });
+        })
+    }
 
     public productosSearch(term: any) {
         return new Promise((resolve, reject) => {

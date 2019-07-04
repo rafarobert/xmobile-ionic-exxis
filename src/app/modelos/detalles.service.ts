@@ -36,7 +36,9 @@ export class DetallesService {
             '  U_4LOTE varchar(30) DEFAULT NULL,\n' +
             '  GrossBase integer NOT NULL,\n' +
             '  idDocumento integer NOT NULL,\n' +
-            '  fechaAdd datetime NOT NULL\n' +
+            '  fechaAdd datetime NOT NULL,\n' +
+            '  unidadid varchar(20) NOT NULL,\n' +
+            '  tc varchar(20) NOT NULL\n' +
             ')';
         this.model.exeDB().then((data: any) => {
             data.executeSql(sql, []).then(() => {
@@ -49,8 +51,8 @@ export class DetallesService {
 
     public insert(data: any) {
         return new Promise((resolve, reject) => {
-            let sql = "INSERT INTO rdr1(id, DocEntry, DocNum, LineNum, BaseType, BaseEntry, BaseLine, LineStatus, ItemCode, Dscription, Quantity, OpenQty, Price, Currency, DiscPrcnt, LineTotal, WhsCode, CodeBars, PriceAfVAT, TaxCode, U_4DESCUENTO, U_4LOTE, GrossBase, idDocumento, fechaAdd)";
-            sql += "VALUES (NULL, 0, 0, 0, 0, 0, 0, '', '" + data.ItemCode + "', '" + data.Dscription + "', '" + data.Quantity + "', 0, " + data.Price + ", '" + data.Currency + "', 0, " + data.LineTotal + ", '" + data.WhsCode + "', '', 0, '', 0, '', " + data.GrossBase + ", " + data.idDocumento + ", '" + data.fechaAdd + "')";
+            let sql = "INSERT INTO rdr1(id, DocEntry, DocNum, LineNum, BaseType, BaseEntry, BaseLine, LineStatus, ItemCode, Dscription, Quantity, OpenQty, Price, Currency, DiscPrcnt, LineTotal, WhsCode, CodeBars, PriceAfVAT, TaxCode, U_4DESCUENTO, U_4LOTE, GrossBase, idDocumento, fechaAdd, unidadid, tc)";
+            sql += "VALUES (NULL, 0, 0, 0, 0, 0, 0, '', '" + data.ItemCode + "', '" + data.Dscription + "', '" + data.Quantity + "', 0, " + data.Price + ", '" + data.Currency + "', 0, " + data.LineTotal + ", '" + data.WhsCode + "', '', 0, '', 0, '', " + data.GrossBase + ", " + data.idDocumento + ", '" + data.fechaAdd + "','" + data.unidadID + "','')";
             this.model.exeDB().then((data: any) => {
                 data.executeSql(sql, []).then((resp: any) => {
                     resolve(resp);

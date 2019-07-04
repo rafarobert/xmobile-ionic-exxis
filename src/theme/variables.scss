@@ -1,6 +1,6 @@
 // Ionic Variables and Theming. For more info, please see:
 // http://ionicframework.com/docs/theming/
-
+@import "animate";
 /** Ionic CSS Variables **/
 :root {
   /** primary **/
@@ -80,6 +80,7 @@
 .marginTop {
   height: 40px;
 }
+
 .imagenPerfil {
   background-image: url(../assets/man.svg);
   background-position: center;

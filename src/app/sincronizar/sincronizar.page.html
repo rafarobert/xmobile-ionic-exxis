@@ -1,6 +1,6 @@
 <ion-header>
     <ion-toolbar color="primary">
-        <ion-buttons slot="start">
+        <ion-buttons slot="start" *ngIf="isenabled">
             <ion-back-button></ion-back-button>
         </ion-buttons>
         <ion-title>{{etiquetas.tit_Sincr}}</ion-title>
@@ -12,6 +12,12 @@
             <ion-card-subtitle>{{etiquetas.lbl_SincrDesc}}</ion-card-subtitle>
             <ion-card-title></ion-card-title>
         </ion-card-header>
+
+        <div *ngIf="load">
+            <ion-progress-bar type="indeterminate" reversed="true"></ion-progress-bar>
+        </div>
+
+
         <ion-card-content>
             <ion-list>
                 <ion-item>
@@ -66,7 +72,7 @@
                 </ion-item>
             </ion-list>
             <br/>
-            <ion-button color="primary" [disabled]="!isenabled" expand="block" shape="round" (click)="sincronizar()">
+            <ion-button color="primary" [disabled]="!isenabled" expand="block" shape="round" (click)="pedidosarr(1)">
                 {{etiquetas.btn_SincrStart}}
             </ion-button>
         </ion-card-content>
