@@ -21,13 +21,13 @@ export class DatarestService {
                 private nativeStorage: NativeStorage, private uid: Uid,
                 private device: Device,
                 private authenticationService: AuthenticationService,
-                private nativeService: NativeService) {
+                private nativeService: NativeService) {        
     }
 
     public getLocalidad(id: any) {
         let u = '';
         if (id == 0) {
-            u = '';
+            u = '0';
         } else {
             u = '/' + id;
         }
@@ -45,6 +45,7 @@ export class DatarestService {
                             }, error => {
                                 reject(error);
                             });
+
                         }
                     }).catch((err: any) => {
                     reject(err);
@@ -239,22 +240,45 @@ export class DatarestService {
     }
 
     public getPersona(id: any) {
-        return new Promise((resolve, reject) => 
-        {
-            this.http.get("http://192.168.1.12:82/xmobilemiddleware/api/solicitudregistro/78912345",{},{}).then((result: any) => {
-            console.log(result);
-            resolve(JSON.parse(result.data));
-        }).catch((error: any) => {
-            reject(error);
-        });} )
-    }
-
-    public saveUsuario(data: any){
-        return new Promise((resolve,reject) => {
-            resolve("ok");
-            reject("error");
+        return new Promise((resolve, reject) => {
+                this.nativeStorage.getItem('IP').then((url: any) => {
+                     this.http.get(url + "api/olicitudregistro/78912345",{},{}).then((result: any) => {
+                        resolve(JSON.parse(result.data));
+                    }).catch((error: any) => {
+                        reject(error);
+                });
+            }).catch((error: any) => {
+                reject(error);
+            });
         });
     }
 
+    public saveUsuario(data: any){
+            return new Promise((resolve,reject) => {
+                this.nativeStorage.getItem('IP').then((url: any) => {
+                this.http.post(url + "api/solicitudregistro",data,{}).then((result: any) => {
+                    resolve(JSON.parse(result.data));
+                }).catch((error: any) => {
+                    reject(error);
+                });
+            }).catch((error: any) => {
+                reject(error);
+            });
+        });
+    }
 
+    public getLocalidadParaRegistro() {
+        let u = '/1';
+        return new Promise((resolve, reject) => {
+            this.nativeStorage.getItem('IP').then((url: any) => {
+                this.http.get(url + "api/localidad" + u, {}, {})
+                    .then((data: any) => {
+                        let json = JSON.parse(data.data);
+                        resolve(json);
+                    }).catch((err: any) => {
+                    reject(err);
+                })
+            })
+        })
+    }
 }
