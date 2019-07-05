@@ -41,7 +41,7 @@ export class RegisterPage implements OnInit {
                }
 
   private ngLabels() {
-    this.datarestService.getLocalidad(1).then((result: any) => {
+    this.datarestService.getLocalidadParaRegistro().then((result: any) => {
         this.etiquetas = result;
     });
   }

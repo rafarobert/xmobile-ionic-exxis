@@ -36,7 +36,7 @@ export class DatarestService {
                 this.http.get(url + "api/localidad" + u, {}, {})
                     .then((data: any) => {
                         let json = JSON.parse(data.data);
-                        if (id != 0) {
+                        if (id == 0) {
                             console.log('Lista lugares');
                             resolve(json);
                         } else {
@@ -45,6 +45,7 @@ export class DatarestService {
                             }, error => {
                                 reject(error);
                             });
+
                         }
                     }).catch((err: any) => {
                     reject(err);
@@ -187,5 +188,20 @@ export class DatarestService {
                 reject(error);
             });
         });
+    }
+
+    public getLocalidadParaRegistro() {
+        let u = '/1';
+        return new Promise((resolve, reject) => {
+            this.nativeStorage.getItem('IP').then((url: any) => {
+                this.http.get(url + "api/localidad" + u, {}, {})
+                    .then((data: any) => {
+                        let json = JSON.parse(data.data);
+                        resolve(json);
+                    }).catch((err: any) => {
+                    reject(err);
+                })
+            })
+        })
     }
 }
